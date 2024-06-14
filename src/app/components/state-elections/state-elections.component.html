@@ -1,0 +1,19 @@
+<div class="add-btn">Shedule Election</div>
+<div class="col-12 kendo-grid-data d-flex justify-content-center flex-column">
+    <div class="kendo-grid-data">
+        <kendo-grid [kendoGridBinding]="gridData" kendoGridSelectBy="id" [pageSize]="20" [pageable]="pageableSettings"
+            [sortable]="true" [groupable]="true" [reorderable]="true" [resizable]="true"
+            [columnMenu]="{ filter: true }">
+            <kendo-grid-column field="ProductID" title="State" [width]=30>
+            </kendo-grid-column>
+            <kendo-grid-column field="ProductName" title="Year" [width]=20>
+            </kendo-grid-column>
+            <kendo-grid-column field="Category.CategoryName" title="Total Assembly" [width]=20>
+            </kendo-grid-column>
+            <kendo-grid-column field="Category.CategoryName" title="Status" [width]=20>
+            </kendo-grid-column>
+            <kendo-grid-column field="Category.CategoryName" title="Approval" [width]=10>
+            </kendo-grid-column>
+        </kendo-grid>
+    </div>
+</div>
