@@ -1,1 +1,28 @@
-<p>state-candidates works!</p>
+<button kendoButton class="k-btn mb-3" [svgIcon]="plusIcon"
+    style="padding: 8px; font-weight: bolder; padding-left: 15px; padding-right: 15px;">
+    Add Candidate
+</button>
+<div class="col-12 kendo-grid-data d-flex justify-content-center flex-column">
+    <div class="kendo-grid-data">
+        <kendo-grid [kendoGridBinding]="gridData" kendoGridSelectBy="id" [pageSize]="20" [pageable]="pageableSettings"
+            [sortable]="true" [groupable]="true" [reorderable]="true" [resizable]="true"
+            [columnMenu]="{ filter: true }">
+            <ng-template kendoGridToolbarTemplate>
+                <button kendoGridExcelCommand type="button" [svgIcon]="excelSVG" style="padding: 8px;">
+                    Export to Excel
+                </button>
+                <button kendoGridPDFCommand [svgIcon]="pdfSVG" style="padding: 8px;">Export to PDF</button>
+                <kendo-textbox class="ms-auto" style="width: 50%; padding: 5px;"
+                    placeholder="Search in all columns..."></kendo-textbox>
+            </ng-template>
+            <kendo-grid-column field="ProductID" title="Candidate Name" [width]=30>
+            </kendo-grid-column>
+            <kendo-grid-column field="ProductName" title="Party" [width]=20>
+            </kendo-grid-column>
+            <kendo-grid-column field="Category.CategoryName" title="Assembly Seat No." [width]=20>
+            </kendo-grid-column>
+            <kendo-grid-column field="Category.CategoryName" title="Assembly Seat Name" [width]=20>
+            </kendo-grid-column>
+        </kendo-grid>
+    </div>
+</div>

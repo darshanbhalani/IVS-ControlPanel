@@ -81,4 +81,5 @@ export class SidebarComponent {
       this.isClassAdded = true;
     }
   }
+
 }

@@ -11,7 +11,7 @@
         </a>
         <span class="tooltip">Dashboard</span>
       </li>
-      <li (click)="toggleDropdown1()">
+      <!-- <li (click)="toggleDropdown1()">
         <a class=" dropdowndropbtn">
           <i class="fa fa-indent"></i>
           <span class="link_name">Parlamentry Elections</span>
@@ -56,7 +56,7 @@
           </li>
         </ul>}
         <span class="tooltip">Parlamentry Elections</span>
-      </li>
+      </li> -->
       <li (click)="toggleDropdown2()">
         <a class=" dropdowndropbtn">
           <i class="fa fa-indent"></i>
@@ -73,21 +73,21 @@
         @if(isDropdownOpen2){
         <ul>
           <li>
-            <a routerLink="elections">
+            <a routerLink="stateelection/elections">
               <i class="fa fa-truck-fast"></i>
               <span class="link_name">Elections</span>
             </a>
             <span class="tooltip">Elections</span>
           </li>
           <li>
-            <a href="#">
+            <a routerLink="stateelection/assembly">
               <i class="fa fa-cloud"></i>
               <span class="link_name">Assembly</span>
             </a>
             <span class="tooltip">Assembly</span>
           </li>
           <li>
-            <a href="#">
+            <a routerLink="stateelection/candidates">
               <i class="fa-solid fa-users"></i>
               <span class="link_name">Candidates</span>
             </a>
@@ -103,7 +103,7 @@
         </ul>}
         <span class="tooltip">State Elections</span>
       </li>
-      <li (click)="toggleDropdown3()">
+      <!-- <li (click)="toggleDropdown3()">
         <a class=" dropdowndropbtn">
           <i class="fa fa-indent"></i>
           <span class="link_name">Municiple Elections</span>
@@ -148,9 +148,9 @@
           </li>
         </ul>}
         <span class="tooltip">Municiple Elections</span>
-      </li>
+      </li> -->
       <li>
-        <a href="" [class.active]="false">
+        <a routerLink="parties" [class.active]="false">
           <i class="fa-solid fa-flag"></i>
           <span class="link_name">Parties</span>
         </a>

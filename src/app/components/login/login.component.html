@@ -1,0 +1,51 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-8"></div>
+        <div class="col-4 " style="display: grid; align-items: center;">
+            <form class="k-form k-form-md p-5" [formGroup]="form">
+                <h2 class="text-center">Welcome Chief!</h2>
+                <p class="text-center">we are verifing you before getting started.</p>
+                <fieldset class="k-form-fieldset">
+                    <kendo-formfield>
+                        <kendo-label [for]="username" text="Username"></kendo-label>
+                        <kendo-textbox
+                          style="padding:5px;"
+                          formControlName="username"
+                          [clearButton]="true"
+                          #username
+                          required
+                        ></kendo-textbox>
+                        <kendo-formerror>Error: Username is required</kendo-formerror>
+                      </kendo-formfield>
+                      <kendo-formfield>
+                        <kendo-label [for]="password" text="Password"> </kendo-label>
+                        <kendo-textbox
+                        style="padding:5px;"
+                          formControlName="password"
+                          #password
+                          required
+                          [clearButton]="true"
+                        >
+                          <ng-template kendoTextBoxSuffixTemplate>
+                            <button
+                              kendoButton
+                              look="clear"
+                              icon="eye"
+                              (click)="toggleVisibility()"
+                            ></button>
+                          </ng-template>
+                        </kendo-textbox>
+                        <kendo-formerror>Error: Password is required</kendo-formerror>
+                      </kendo-formfield>
+                      <div class="text-end mt-1cls
+                      ">Forgott Password ?</div>
+                      <kendo-formfield>
+                        <input type="submit" value="LogIn" class="submit-btn mt-3"   
+                        style="padding:8px; width: 100%; "
+                        >
+                      </kendo-formfield>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>

@@ -8,6 +8,8 @@ import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { DashboardComponent } from '../dashboard/dashboard.component';
+import { PopupModule } from '@progress/kendo-angular-popup';
+import { log } from 'console';
 
 @Component({
   selector: 'app-navbar',
@@ -24,11 +26,16 @@ import { DashboardComponent } from '../dashboard/dashboard.component';
     LabelModule,
     ButtonsModule,
     RouterLink,
-    DashboardComponent
+    DashboardComponent,
+    PopupModule
   ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
-  
+  data = [
+    { text: "My Profile" },
+    { text: "Account Settings" },
+    { text: "Log Out" },
+  ];
 }
