@@ -8,6 +8,7 @@ import { SVGIcon, SVGIconModule } from '@progress/kendo-angular-icons';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { fileExcelIcon, filePdfIcon } from '@progress/kendo-svg-icons';
+import { StateServiceService } from '../../services/General Services/state-service.service';
 declare var FusionCharts: any;
 interface DataSource {
   chart: {
@@ -50,7 +51,13 @@ interface DataSource {
 })
 
 export class StateAssemblyComponent {
-  gridData=[];
+  gridData = [];
+  stateList:any = [];
+  public pdfSVG: SVGIcon = filePdfIcon;
+  public excelSVG: SVGIcon = fileExcelIcon;
+  scrollable: 'none' | 'scrollable' | 'virtual' = 'scrollable';
+  dataSources: { [key: string]: DataSource };
+
   public pageableSettings: any = {
     buttonCount: 5,
     info: true,
@@ -58,22 +65,12 @@ export class StateAssemblyComponent {
     pageSizes: [10, 20, 40, 50, 100, 'All'],
     previousNext: true
   };
-  public pdfSVG: SVGIcon = filePdfIcon;
-  public excelSVG: SVGIcon = fileExcelIcon;
-  stateList = [
-    {
-      name: "Maharashtra",
-      value: "Maharashtra"
-    }, {
-      name: "Gujarat",
-      value: "Gujarat"
-    }, {
-      name: "Karnataka",
-      value: "Karnataka"
-    }
-  ];
-  dataSources: { [key: string]: DataSource };
-  constructor() {
+
+
+
+
+  constructor(private dataService: StateServiceService) {
+  
     this.dataSources = {
       india: {
         chart: {
@@ -218,10 +215,25 @@ export class StateAssemblyComponent {
       }
     };
   }
-  
-  ngOnInit() {
-    this.renderChart('india', this.dataSources['india']);
+
+  async ngOnInit() {
     this.removeKendoInvalidLicance();
+    this.getData();
+    await this.getAllAssemblies(0);
+    console.log(this.stateList);
+    this.renderChart('india', this.dataSources['india']);
+  }
+
+  getData() {
+    this.dataService.GetAllStates().subscribe(
+      (response: any) => {
+        this.stateList = response.body.data.map((state: any) => ({ name: state.stateName, value: state.stateId }));
+      },
+      (error: any) => {
+        console.error('Error fetching data:', error);
+      }
+    );
+
   }
 
   renderChart(type: string, dataSource: any) {
@@ -237,27 +249,41 @@ export class StateAssemblyComponent {
       myChart.render();
     });
   }
+
   updateMap(event: any) {
-        this.renderChart(event.toString().toLowerCase(), this.dataSources[event.toString().toLowerCase()]);
-    console.log(event);
+    this.getAllAssemblies(event);
+    const name = this.stateList.find((item:any) => item.value === event)?.name;
+    if (name) {
+      this.renderChart(name.toString().toLowerCase().trim().replace(/\s+/g, ""), this.dataSources[name.toString().toLowerCase().trim().replace(/\s+/g, "")]);
+    } else {
+      console.error('Selected item not found in the list.');
+    }
+  }
+
+  getAllAssemblies(stateId: any) {
+    this.dataService.GetAllAssemblyByState(stateId).subscribe(
+      (response: any) => {
+        this.gridData = response.body.data;
+      },
+      (error: any) => {
+        console.error('Error fetching data:', error);
+      }
+    );
+   
   }
 
   removeKendoInvalidLicance() {
     setTimeout(() => {
-      // Remove the banner with the unique text content
       const banner = Array.from(document.querySelectorAll('div')).find((el) =>
         el.textContent?.includes('No valid license found for Kendo UI for Angular')
       );
       if (banner) banner.remove();
-  
-      // Remove the watermark element
       const watermarkElement = document.querySelector('div[kendowatermarkoverlay]');
       if (watermarkElement) {
         watermarkElement.remove();
-        console.log('Watermark removed successfully.');
       } else {
         console.log('Watermark element not found.');
       }
-    }, 0); 
+    }, 0);
   }
 }

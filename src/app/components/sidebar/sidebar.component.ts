@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, ElementRef, Renderer2 } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
 import { LayoutComponent } from '../layout/layout.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -34,6 +34,15 @@ export class SidebarComponent {
   isDropdownOpen1: boolean = false;
   isDropdownOpen2: boolean = false;
   isDropdownOpen3: boolean = false;
+
+
+  constructor(private eRef: ElementRef, private renderer: Renderer2) {
+    this.renderer.listen('document', 'click', (event) => {
+      if (!this.eRef.nativeElement.contains(event.target)) {
+        this.isClassAdded = false;
+      }
+    });
+  }
 
   toggleClass(): void {
     this.isClassAdded = !this.isClassAdded;
