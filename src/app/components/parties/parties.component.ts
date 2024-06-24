@@ -7,6 +7,11 @@ import { InputsModule } from '@progress/kendo-angular-inputs';
 import { SVGIcon, plusIcon,fileExcelIcon, filePdfIcon } from '@progress/kendo-svg-icons';
 import { PartyServiceService } from '../../services/Party Services/party-service.service';
 import { process } from '@progress/kendo-data-query';
+import { PopupModule } from '@progress/kendo-angular-popup';
+import { DialogModule } from '@progress/kendo-angular-dialog';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { LabelModule } from '@progress/kendo-angular-label';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-parties',
   standalone: true,
@@ -17,7 +22,11 @@ import { process } from '@progress/kendo-data-query';
     SVGIconModule,
     ExcelModule,
     PDFModule,
-    ButtonModule
+    ButtonModule,
+    PopupModule,
+    DialogModule,
+    LabelModule,
+    ReactiveFormsModule
   ],
   templateUrl: './parties.component.html',
   styleUrl: './parties.component.scss'
@@ -37,8 +46,12 @@ export class PartiesComponent {
   public pdfSVG: SVGIcon = filePdfIcon;
   public excelSVG: SVGIcon = fileExcelIcon;
   public plusIcon: SVGIcon = plusIcon;
+  
+  public form: FormGroup = new FormGroup({
+    partyName: new FormControl(),
+  });
 
-  constructor(private dataService: PartyServiceService) {
+  constructor(private dataService: PartyServiceService,private modalService: NgbModal) {
    }
 
   ngOnInit() {
@@ -48,7 +61,7 @@ export class PartiesComponent {
   }
   
   getData() {
-    this.dataService.GetAllVerifiedParties().subscribe(
+    this.dataService.getAllParties().subscribe(
       (response:any) => {
           this.gridData=response.body.data;
           this.gridView = this.gridData;
@@ -92,5 +105,45 @@ export class PartiesComponent {
         console.log('Watermark element not found.');
       }
     }, 0); 
+  }
+
+  showPopup = false;
+  imageSrc: string | ArrayBuffer | null = null;
+
+  openAddModal(event: Event, content: any) {
+    event.preventDefault();
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'lg' });
+  }
+
+  openVerifyModal(event: Event, content: any,id:number) {
+    event.preventDefault();
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'lg' });
+  }
+
+  onFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        this.imageSrc = e.target?.result as string | ArrayBuffer;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  verifyParty(){
+    this.dataService.deleteParty(3,1).subscribe(
+      (response:any) => {
+        if(response){
+          console.log(response.body.message);
+        }else{
+          console.log(response.body.error);
+        }
+      },
+      (error:any) => {
+        console.error('Error fetching data:', error.body.error);
+      }
+    );
   }
 }

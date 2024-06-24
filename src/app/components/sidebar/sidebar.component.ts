@@ -37,11 +37,14 @@ export class SidebarComponent {
 
 
   constructor(private eRef: ElementRef, private renderer: Renderer2) {
-    this.renderer.listen('document', 'click', (event) => {
-      if (!this.eRef.nativeElement.contains(event.target)) {
-        this.isClassAdded = false;
-      }
-    });
+    // this.renderer.listen('document', 'click', (event) => {
+    //   if (!this.eRef.nativeElement.contains(event.target)) {
+    //     this.isClassAdded = false;
+    //     this.isDropdownOpen1=false;
+    //     this.isDropdownOpen2=false;
+    //     this.isDropdownOpen3=false;
+    //   }
+    // });
   }
 
   toggleClass(): void {
