@@ -12,8 +12,8 @@
     </div>
     <div class="col-8">
         <div class="kendo-grid-data">
-        <kendo-grid [kendoGridBinding]="gridData" kendoGridSelectBy="id" [pageSize]="20" [pageable]="pageableSettings"
-            [sortable]="true" [groupable]="true" [reorderable]="true" [resizable]="true"
+        <kendo-grid [data]="gridData" kendoGridSelectBy="id" [pageSize]="20" [pageable]="pageableSettings"
+            [sortable]="true" [groupable]="true" [resizable]="true"
             [columnMenu]="{ filter: true }" [height]="580" >
             <ng-template kendoGridToolbarTemplate>
                 <button kendoGridExcelCommand type="button" [svgIcon]="excelSVG" style="padding: 8px;">

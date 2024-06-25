@@ -218,8 +218,8 @@ export class StateAssemblyComponent {
 
   async ngOnInit() {
     this.removeKendoInvalidLicance();
-    this.getData();
-    await this.getAllAssemblies(0);
+    // this.getData();
+    // await this.getAllAssemblies(0);
     console.log(this.stateList);
     this.renderChart('india', this.dataSources['india']);
   }

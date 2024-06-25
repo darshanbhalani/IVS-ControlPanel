@@ -1,4 +1,4 @@
-<div [class.open]="isClassAdded" class="sidebar">
+<div [class.open]="isOpen$ | async" class="sidebar">
     <div class="logo_details">
       <div class="logo_name">I V S - A D M I N</div>
       <div (click)="toggleClass()"><i class="fa fa-bars" id="btn"></i></div>
@@ -11,58 +11,12 @@
         </a>
         <span class="tooltip">Dashboard</span>
       </li>
-      <!-- <li (click)="toggleDropdown1()">
-        <a class=" dropdowndropbtn">
-          <i class="fa fa-indent"></i>
-          <span class="link_name">Parlamentry Elections</span>
-          @if(isClassAdded){
-          @if(isDropdownOpen1){
-          <i class="fa fa-caret-up"></i>
-          }
-          @else{
-          <i class="fa fa-caret-down"></i>
-          }
-          }
-        </a>
-        @if(isDropdownOpen1){
-        <ul>
-          <li>
-            <a href="#">
-              <i class="fa fa-truck-fast"></i>
-              <span class="link_name">Elections</span>
-            </a>
-            <span class="tooltip">Elections</span>
-          </li>
-          <li>
-            <a href="#">
-              <i class="fa fa-cloud"></i>
-              <span class="link_name">constituency</span>
-            </a>
-            <span class="tooltip">constituency</span>
-          </li>
-          <li>
-            <a href="#">
-              <i class="fa-solid fa-users"></i>
-              <span class="link_name">Candidates</span>
-            </a>
-            <span class="tooltip">Candidates</span>
-          </li>
-          <li>
-            <a href="#">
-              <i class="fa-solid fa-square-poll-vertical"></i>
-              <span class="link_name">Result</span>
-            </a>
-            <span class="tooltip">Result</span>
-          </li>
-        </ul>}
-        <span class="tooltip">Parlamentry Elections</span>
-      </li> -->
       <li (click)="toggleDropdown2()">
         <a class=" dropdowndropbtn">
           <i class="fa fa-indent"></i>
           <span class="link_name">State Elections</span>
-          @if(isClassAdded){
-          @if(isDropdownOpen2){
+          @if(isOpen$ | async){
+          @if(isDropdownOpen){
           <i class="fa fa-caret-up"></i>
           }
           @else{
@@ -70,7 +24,7 @@
           }
           }
         </a>
-        @if(isDropdownOpen2){
+        @if(isDropdownOpen){
         <ul>
           <li>
             <a routerLink="stateelection/elections">
@@ -103,52 +57,6 @@
         </ul>}
         <span class="tooltip">State Elections</span>
       </li>
-      <!-- <li (click)="toggleDropdown3()">
-        <a class=" dropdowndropbtn">
-          <i class="fa fa-indent"></i>
-          <span class="link_name">Municiple Elections</span>
-          @if(isClassAdded){
-          @if(isDropdownOpen3){
-          <i class="fa fa-caret-up"></i>
-          }
-          @else{
-          <i class="fa fa-caret-down"></i>
-          }
-          }
-        </a>
-        @if(isDropdownOpen3){
-        <ul>
-          <li>
-            <a href="#">
-              <i class="fa fa-truck-fast"></i>
-              <span class="link_name">Elections</span>
-            </a>
-            <span class="tooltip">Elections</span>
-          </li>
-          <li>
-            <a href="#">
-              <i class="fa fa-cloud"></i>
-              <span class="link_name">Ward</span>
-            </a>
-            <span class="tooltip">Ward</span>
-          </li>
-          <li>
-            <a href="#">
-              <i class="fa-solid fa-users"></i>
-              <span class="link_name">Candidates</span>
-            </a>
-            <span class="tooltip">Candidates</span>
-          </li>
-          <li>
-            <a href="#">
-              <i class="fa-solid fa-square-poll-vertical"></i>
-              <span class="link_name">Result</span>
-            </a>
-            <span class="tooltip">Result</span>
-          </li>
-        </ul>}
-        <span class="tooltip">Municiple Elections</span>
-      </li> -->
       <li>
         <a routerLink="parties" [class.active]="false">
           <i class="fa-solid fa-flag"></i>
@@ -163,6 +71,5 @@
         </a>
         <span class="tooltip">Configurations</span>
       </li>
-
     </ul>
   </div>
