@@ -6,6 +6,7 @@ import { StateCandidatesComponent } from './components/state-candidates/state-ca
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { PartiesComponent } from './components/parties/parties.component';
 import { LoginComponent } from './components/login/login.component';
+import { ErrorComponent } from './components/error/error.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -13,12 +14,14 @@ export const routes: Routes = [
     { path: 'stateelection', redirectTo: '/stateelection/elections', pathMatch: 'full' },
     {
         path: 'stateelection', children: [
-            { path: 'elections', component: StateElectionsComponent },
-            { path: 'assembly', component: StateAssemblyComponent },
-            { path: 'candidates', component: StateCandidatesComponent },
-            { path: 'results', component: StateResultsComponent }
+            { path: 'elections', component: StateElectionsComponent, pathMatch: 'full' },
+            { path: 'assembly', component: StateAssemblyComponent, pathMatch: 'full' },
+            { path: 'candidates', component: StateCandidatesComponent, pathMatch: 'full' },
+            { path: 'results', component: StateResultsComponent, pathMatch: 'full' }
         ]
     },
-    { path: 'parties', component: PartiesComponent },
-    { path: 'account/login', component: LoginComponent }
+    { path: 'parties', component: PartiesComponent , pathMatch: 'full'},
+    { path: 'account/login', component: LoginComponent, pathMatch: 'full' },
+    { path: 'error', component: ErrorComponent },
+    { path: '**', redirectTo: '/error', pathMatch: 'full' }
 ];

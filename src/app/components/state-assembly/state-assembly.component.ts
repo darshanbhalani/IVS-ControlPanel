@@ -9,6 +9,7 @@ import { InputsModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { fileExcelIcon, filePdfIcon } from '@progress/kendo-svg-icons';
 import { StateServiceService } from '../../services/General Services/state-service.service';
+import { LayoutServiceService } from '../../services/Layout Service/layout-service.service';
 declare var FusionCharts: any;
 interface DataSource {
   chart: {
@@ -69,8 +70,7 @@ export class StateAssemblyComponent {
 
 
 
-  constructor(private dataService: StateServiceService) {
-  
+  constructor(private dataService: StateServiceService,private layoutService:LayoutServiceService) {
     this.dataSources = {
       india: {
         chart: {

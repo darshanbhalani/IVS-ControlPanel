@@ -4,6 +4,7 @@ import { SVGIconModule } from '@progress/kendo-angular-icons';
 import { InputsModule, TextBoxComponent } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { eyeIcon } from '@progress/kendo-svg-icons';
+import { LayoutServiceService } from '../../services/Layout Service/layout-service.service';
 
 @Component({
   selector: 'app-login',
@@ -23,6 +24,9 @@ export class LoginComponent {
     @ViewChild("password") public textbox!: TextBoxComponent;
   
     public eyeIcon: SVGIconModule = eyeIcon;
+
+constructor(private layoutService : LayoutServiceService){
+}
 
   public ngAfterViewInit(): void {
     this.textbox.input.nativeElement.type = "password";
