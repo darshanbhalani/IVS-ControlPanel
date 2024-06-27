@@ -1,34 +1,35 @@
-<kendo-dropdownlist 
-    class="input-field" 
-    [data]="stateList"
-    textField="name"
-    valueField="value"
-    (valueChange)="updateMap($event)"
-    [valuePrimitive]="true">
-</kendo-dropdownlist>
 <div class="row">
     <div class="col-4 mb-3">
         <div id="chart-container"></div>
     </div>
     <div class="col-8">
-        <div class="kendo-grid-data">
-        <kendo-grid [data]="gridData" kendoGridSelectBy="id" [pageSize]="20" [pageable]="pageableSettings"
-            [sortable]="true" [groupable]="true" [resizable]="true"
-            [columnMenu]="{ filter: true }" [height]="580" >
-            <ng-template kendoGridToolbarTemplate>
-                <button kendoGridExcelCommand type="button" [svgIcon]="excelSVG" style="padding: 8px;">
-                    Export to Excel
-                </button>
-                <button kendoGridPDFCommand [svgIcon]="pdfSVG" style="padding: 8px;">Export to PDF</button>
-                <kendo-textbox class="ms-auto" style="width: 50%; padding: 5px;"
-                    placeholder="Search in all columns..."></kendo-textbox>
-            </ng-template>
-            <kendo-grid-column field="asseblyName" title="State" [width]=60>
-            </kendo-grid-column>
-            <kendo-grid-column field="asseblyDistrict" title="Year" [width]=40>
-            </kendo-grid-column>
-        </kendo-grid>
-    </div>
+        <div class="row">
+            <div class="col">
+                <kendo-dropdownlist class="input-field" [data]="stateList" textField="name" valueField="value"
+                    (valueChange)="updateMap($event)" [valuePrimitive]="true" style="padding: 5px;" [value]="'Andhra Pradesh'">
+                </kendo-dropdownlist>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="kendo-grid-data">
+                <kendo-grid [kendoGridBinding]="gridView" kendoGridSelectBy="id" [pageSize]="20"
+                    [pageable]="pageableSettings" [sortable]="true" [groupable]="true" [reorderable]="true"
+                    [resizable]="true" [columnMenu]="{ filter: true }" [height]="580">
+                    <ng-template kendoGridToolbarTemplate>
+                        <button kendoGridExcelCommand type="button" [svgIcon]="excelSVG" style="padding: 8px;">
+                            Export to Excel
+                        </button>
+                        <button kendoGridPDFCommand [svgIcon]="pdfSVG" style="padding: 8px;">Export to PDF</button>
+                        <kendo-textbox class="ms-auto" style="width: 50%; padding: 5px;"
+                            placeholder="Search in all columns..." 
+                            (valueChange)="onFilter($event)"></kendo-textbox>
+                    </ng-template>
+                    <kendo-grid-column field="asseblyName" title="Assemby Name" [width]=60>
+                    </kendo-grid-column>
+                    <kendo-grid-column field="asseblyDistrict" title="District" [width]=40>
+                    </kendo-grid-column>
+                </kendo-grid>
+            </div>
+        </div>
     </div>
 </div>
-  

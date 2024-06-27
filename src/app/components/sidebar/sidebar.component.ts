@@ -36,6 +36,7 @@ export class SidebarComponent {
 
   constructor(private eRef: ElementRef, private layoutService: LayoutServiceService) {}
 
+
   toggleClass() {
     this.layoutService.toggleSidebar();
     this.resetDropdowns();
