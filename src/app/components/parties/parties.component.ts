@@ -71,6 +71,7 @@ export class PartiesComponent {
       }
     );
   }
+  
   public onFilter(value: Event): void {
     const inputValue = value;
     console.error("Called...");
