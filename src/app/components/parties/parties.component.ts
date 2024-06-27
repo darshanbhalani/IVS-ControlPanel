@@ -26,6 +26,7 @@ export class PartiesComponent {
   @ViewChild(DataBindingDirective) dataBinding!: DataBindingDirective;
   gridData=[];
    gridView: any[]=[];
+
   public pageableSettings: any = {
     buttonCount: 5,
     info: true,
@@ -34,17 +35,16 @@ export class PartiesComponent {
     previousNext: true
   };
   selectedItem: any;
+
   public pdfSVG: SVGIcon = filePdfIcon;
   public excelSVG: SVGIcon = fileExcelIcon;
   public plusIcon: SVGIcon = plusIcon;
 
-  constructor(private dataService: PartyServiceService) {
-   }
+  constructor(private dataService: PartyServiceService) {}
 
   ngOnInit() {
     this.removeKendoInvalidLicance();
     this.getData();
-    
   }
   
   getData() {
@@ -58,7 +58,8 @@ export class PartiesComponent {
       }
     );
   }
-  public onFilter(value: Event): void {
+
+   onFilter(value: Event): void {
     const inputValue = value;
     console.error("Called...");
     this.gridView = process(this.gridData, {
