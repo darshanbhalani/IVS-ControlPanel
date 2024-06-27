@@ -79,9 +79,10 @@ export class StateAssemblyComponent {
   };
 
 
+
   constructor(private dataService: StateServiceService) {
     this.getData();
-  
+
     this.dataSources = {
       // india: {
       //   chart: {

@@ -1,6 +1,6 @@
-import { Component, HostListener, ElementRef, Renderer2 } from '@angular/core';
+import { Component, ElementRef, HostListener } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
-import { LayoutComponent } from '../layout/layout.component';
+import { LayoutServiceService } from '../../services/Layout Service/layout-service.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
@@ -8,13 +8,13 @@ import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { DashboardComponent } from '../dashboard/dashboard.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
   imports: [
     RouterOutlet,
-    LayoutComponent,
     FormsModule,
     InputsModule,
     ReactiveFormsModule,
@@ -24,74 +24,56 @@ import { DashboardComponent } from '../dashboard/dashboard.component';
     LabelModule,
     ButtonsModule,
     RouterLink,
-    DashboardComponent
+    DashboardComponent,
+    CommonModule
   ],
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.scss'
+  styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent {
-  isClassAdded: boolean = true;
-  isDropdownOpen1: boolean = false;
-  isDropdownOpen2: boolean = false;
-  isDropdownOpen3: boolean = false;
+  isOpen$ = this.layoutService.isOpen$;
+  isDropdownOpen = false;
+
+  constructor(private eRef: ElementRef, private layoutService: LayoutServiceService) {}
 
 
-  constructor(private eRef: ElementRef, private renderer: Renderer2) {
-    // this.renderer.listen('document', 'click', (event) => {
-    //   if (!this.eRef.nativeElement.contains(event.target)) {
-    //     this.isClassAdded = false;
-    //     this.isDropdownOpen1=false;
-    //     this.isDropdownOpen2=false;
-    //     this.isDropdownOpen3=false;
-    //   }
-    // });
+  toggleClass() {
+    this.layoutService.toggleSidebar();
+    this.resetDropdowns();
   }
 
-  toggleClass(): void {
-    this.isClassAdded = !this.isClassAdded;
-    if(!this.isClassAdded){
-      this.isDropdownOpen1=false;
-      this.isDropdownOpen2=false;
-      this.isDropdownOpen3=false;
-    }
-  }
 
-  toggleDropdown1() {
-    if(!this.isClassAdded){
-      this.isClassAdded=true;
-    }
-    this.isDropdownOpen1 = !this.isDropdownOpen1;
-  }
   toggleDropdown2() {
-    if(!this.isClassAdded){
-      this.isClassAdded=true;
-    }
-    this.isDropdownOpen2 = !this.isDropdownOpen2;
-  }
-  toggleDropdown3() {
-    if(!this.isClassAdded){
-      this.isClassAdded=true;
-    }
-    this.isDropdownOpen3 = !this.isDropdownOpen3;
+    this.layoutService.openSidebar();
+    this.isDropdownOpen = !this.isDropdownOpen;
   }
 
-  @HostListener('window:resize', ['$event'])
-  onResize(event: Event): void {
+
+  @HostListener('document:click', ['$event'])
+  onClick(event: MouseEvent) {
+    if (!this.eRef.nativeElement.contains(event.target)) {
+      this.layoutService.closeSidebar();
+      this.resetDropdowns();
+    }
+  }
+
+  @HostListener('window:resize')
+  onResize() {
     this.checkScreenSize();
   }
 
-  private checkScreenSize(): void {
+  private checkScreenSize() {
     if (window.innerWidth < 1200) {
-      this.isClassAdded = false;
-      if(!this.isClassAdded){
-        this.isDropdownOpen1=false;
-        this.isDropdownOpen2=false;
-        this.isDropdownOpen3=false;
-      }
-    }
-    if (window.innerWidth > 1200) {
-      this.isClassAdded = true;
+      this.layoutService.closeSidebar();
+      this.resetDropdowns();
+    } else {
+      this.layoutService.openSidebar();
     }
   }
 
+  private resetDropdowns() {
+    if (this.isOpen$) {
+      this.isDropdownOpen = false;
+    }
+  }
 }

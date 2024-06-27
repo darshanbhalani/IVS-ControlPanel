@@ -1,2 +1,6 @@
+<div *ngIf="pageNotFound$ | async; else appLayout">
+    <app-error></app-error>
+</div>
+<ng-template #appLayout>
 <app-layout></app-layout>
-<!-- <app-login></app-login> -->
+</ng-template>
