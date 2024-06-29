@@ -29,4 +29,5 @@ export class LayoutComponent {
   ngOnInit() {
     this.layoutService.setPath();
   }
+  
 }

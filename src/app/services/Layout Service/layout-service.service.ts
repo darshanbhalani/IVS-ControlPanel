@@ -14,7 +14,6 @@ export class LayoutServiceService {
   pageNotFound$ = this.pageNotFound.asObservable();
   private isLoginPage = new BehaviorSubject<boolean>(true);
   isLoginPage$ = this.isLoginPage.asObservable();
-
   private currentPath = new BehaviorSubject<string>("");
   currentPath$ = this.currentPath.asObservable();
 
