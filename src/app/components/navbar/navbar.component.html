@@ -7,7 +7,7 @@
           </kendo-autocomplete>
         </li>
           <li class="text-light p-2">
-          <span class="text-light me-2">MR. DARSHAN BHALANI</span>
+          <span class="text-light me-2">{{currentPath$ | async}}</span>
           <kendo-dropdownbutton [data]="data" fillMode="flat" textField="name"
           valueField="value" (itemClick)="onDropdownClick($event,profilemodal,logoutmodal)">
           <i class="fa fa-caret-down" id="btn"></i>
@@ -28,7 +28,7 @@
       You are sure!, You want to Logout ?
   </div>
   <div class="modal-footer">
-      <button type="button" class="btn btn-outline-dark" >Logout</button>
+      <button type="button" class="btn btn-outline-dark" (click)="logout($event,logoutmodal)">Logout</button>
   </div>
 </ng-template>
 
@@ -40,25 +40,25 @@
   <div class="modal-body">
      <div class="row">
        <div class="col-4 d-flex flex-column justify-content-center align-items-center">
-         <img height="200px" width="200px" src="data:image/jpeg;base64,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">
+         <img height="200px" width="200px" [src]="form.profileUrl">
         </div>
        <div class="col-8 d-flex flex-column ">
         <div class="row d-flex flex-row align-items-center">
           <div class="col">
             <label class="2px">Employee Code</label>
-          <input disabled value="ABCDEF123456" style="padding: 5px;" class="mb-2">
+          <input disabled [value]="form.code" style="padding: 5px;" class="mb-2">
           </div>
           <div  class="col">
             <label class="2px">Employee Designation</label>
-          <input disabled value="Admin" style="padding: 5px;" class="mb-2">
+          <input disabled [value]="form.role" style="padding: 5px;" class="mb-2">
           </div>
         </div>
          <label class="2px">Employee Name</label>
-         <input disabled value="Darshan Bhalani" style="padding: 5px;" class="mb-2">
+         <input disabled [value]="form.userName" style="padding: 5px;" class="mb-2">
          <label class="2px">Employee Email</label>
-        <input disabled value="darshanbhalanipatel@gmail.com" style="padding: 5px;" class="mb-2">
+        <input disabled [value]="form.email" style="padding: 5px;" class="mb-2">
          <label class="2px">Employee Phone Number</label>
-         <input disabled value="9909343073" style="padding: 5px;" class="mb-2">
+         <input disabled [value]="form.phoneNumber" style="padding: 5px;" class="mb-2">
        </div>
      </div>
   </div>

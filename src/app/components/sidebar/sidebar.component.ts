@@ -1,6 +1,6 @@
 import { Component, ElementRef, HostListener } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
-import { LayoutServiceService } from '../../services/Layout Service/layout-service.service';
+import { LayoutServiceService } from '../../services/layout/layout-service.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';

@@ -5,13 +5,15 @@ import { ExcelModule, GridModule, PDFModule, DataBindingDirective } from '@progr
 import { SVGIconModule } from '@progress/kendo-angular-icons';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { SVGIcon, plusIcon,fileExcelIcon, filePdfIcon } from '@progress/kendo-svg-icons';
-import { PartyServiceService } from '../../services/Party Services/party-service.service';
+import { PartyServiceService } from '../../services/party/party-service.service';
 import { process } from '@progress/kendo-data-query';
 import { PopupModule } from '@progress/kendo-angular-popup';
 import { DialogModule } from '@progress/kendo-angular-dialog';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CommonModule } from '@angular/common';
+import { UserService } from '../../services/user/user.service';
 @Component({
   selector: 'app-parties',
   standalone: true,
@@ -26,7 +28,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
     PopupModule,
     DialogModule,
     LabelModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CommonModule
   ],
   templateUrl: './parties.component.html',
   styleUrl: './parties.component.scss'
@@ -34,7 +37,11 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class PartiesComponent {
   @ViewChild(DataBindingDirective) dataBinding!: DataBindingDirective;
   gridData=[];
-   gridView: any[]=[];
+  gridView: any[]=[];
+  partyId:any;
+
+  userRole$ = this.userService.userRoleId$;
+
 
   public pageableSettings: any = {
     buttonCount: 5,
@@ -54,9 +61,7 @@ export class PartiesComponent {
   });
 
 
-
-
-  constructor(private dataService: PartyServiceService,private modalService: NgbModal) {
+  constructor(private dataService: PartyServiceService,private modalService: NgbModal,private userService:UserService) {
    }
 
 
@@ -81,7 +86,6 @@ export class PartiesComponent {
   public onFilter(value: Event): void {
 
     const inputValue = value;
-    console.error("Called...");
     this.gridView = process(this.gridData, {
       filter: {
         logic: "or",
@@ -125,6 +129,8 @@ export class PartiesComponent {
 
   openVerifyModal(event: Event, content: any,id:number) {
     event.preventDefault();
+    this.partyId=id;
+    alert(id);
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'lg' });
   }
 
@@ -140,11 +146,12 @@ export class PartiesComponent {
     }
   }
 
-  verifyParty(){
-    this.dataService.deleteParty(3,1).subscribe(
+  verifyParty(content:any){
+    alert(this.partyId);
+    this.dataService.verifyParty(this.partyId,1).subscribe(
       (response:any) => {
         if(response){
-          console.log(response.body.message);
+          this.modalService.dismissAll(content);
         }else{
           console.log(response.body.error);
         }

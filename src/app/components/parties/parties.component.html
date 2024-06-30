@@ -23,13 +23,17 @@
     </kendo-grid-column>
     <kendo-grid-column field="electionPartyName" title="Party Name" [width]="80">
     </kendo-grid-column>
-    <kendo-grid-column field="electionPartyLogoUrl" title="Verification Status" [width]="15">
+    <kendo-grid-column field="verificationStatus" title="Verification Status" [width]="15">
         <ng-template kendoGridCellTemplate let-dataItem>
             @if(dataItem.verificationStatus ==='Verified'){
                 <i class="fa-solid fa-circle-check text-success"></i>
+                <span>&nbsp;{{dataItem.verificationStatus}}</span>
             }@else {
                 <i class="fa-solid fa-circle-info text-danger"></i>
-                <button class="ms-3 btn btn-warning" (click)="openVerifyModal($event, verifyModal,dataItem.electionpartyid)">Verify</button>
+                <span>&nbsp;{{dataItem.verificationStatus}}</span>
+                @if((userRole$ | async) == 1){
+                    <button class="ms-3 btn btn-warning" (click)="openVerifyModal($event, verifyModal,dataItem.electionPartyId)">Verify</button>
+                }
             }
         </ng-template>
     </kendo-grid-column>
@@ -99,6 +103,6 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click'); verifyParty()">Verify</button>
+        <button type="button" class="btn btn-outline-dark" (click)="verifyParty(verifyModal)">Verify</button>
     </div>
 </ng-template>

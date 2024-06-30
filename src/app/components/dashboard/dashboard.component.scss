@@ -1,0 +1,25 @@
+.box {
+  height: 150px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.bg-total {
+  background-color: rgba(75, 192, 192, 1); /* Total color */
+}
+
+.bg-male {
+  background-color: rgba(54, 162, 235, 1); /* Male color */
+}
+
+.bg-female {
+  background-color: rgba(255, 99, 132, 1); /* Female color */
+}
+
+.bg-other {
+  background-color: rgba(153, 102, 255, 1); /* Other color */
+}

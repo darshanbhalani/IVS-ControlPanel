@@ -5,7 +5,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { filter } from 'rxjs/operators'
-import { LayoutServiceService } from '../../services/Layout Service/layout-service.service';
+import { LayoutServiceService } from '../../services/layout/layout-service.service';
 import { LoginComponent } from '../login/login.component';
 import { ErrorComponent } from '../error/error.component';
 

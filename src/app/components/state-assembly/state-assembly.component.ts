@@ -8,7 +8,7 @@ import { SVGIcon, SVGIconModule } from '@progress/kendo-angular-icons';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { fileExcelIcon, filePdfIcon } from '@progress/kendo-svg-icons';
-import { StateServiceService } from '../../services/General Services/state-service.service';
+import { StateServiceService } from '../../services/general/state-service.service';
 import { process } from '@progress/kendo-data-query';
 
 declare var FusionCharts: any;

@@ -12,6 +12,7 @@ import { Chart } from 'chart.js/auto';
 export class DashboardComponent {
   ngOnInit(): void {
     this.createLineChart();
+    this.createDonutChart();
   }
 
   createLineChart() {
@@ -82,6 +83,59 @@ export class DashboardComponent {
         scales: {
           y: {
             beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+
+  createDonutChart() {
+    const ctx1 = document.getElementById('myDonutChart') as HTMLCanvasElement;
+    new Chart(ctx1, {
+      type: 'doughnut',
+      data: {
+        labels: ['Total', 'Male', 'Female', 'Other'],
+        datasets: [{
+          data: [
+            970000000, // Total for a specific year (e.g., 2024)
+            470000000, // Male for the same year
+            450000000, // Female for the same year
+            5000000    // Other for the same year
+          ],
+          backgroundColor: [
+            'rgba(75, 192, 192, 0.8)',  // Total
+            'rgba(54, 162, 235, 0.8)',  // Male
+            'rgba(255, 99, 132, 0.8)',  // Female
+            'rgba(153, 102, 255, 0.8)'  // Other
+          ],
+          borderColor: [
+            'rgba(75, 192, 192, 1)',  // Total
+            'rgba(54, 162, 235, 1)',  // Male
+            'rgba(255, 99, 132, 1)',  // Female
+            'rgba(153, 102, 255, 1)'  // Other
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                let label = context.label || '';
+                if (label) {
+                  label += ': ';
+                }
+                if (context.raw !== null) {
+                  label += new Intl.NumberFormat().format(context.raw as number);
+                }
+                return label;
+              }
+            }
           }
         }
       }
