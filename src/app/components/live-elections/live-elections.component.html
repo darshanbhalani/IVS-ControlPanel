@@ -1,0 +1,33 @@
+<div class="row">
+    <div class="col-2">
+        <kendo-dropdownlist class="input-field" [data]="stateList" textField="name" valueField="value"
+            style="padding: 5px;">
+        </kendo-dropdownlist>
+    </div>
+    <div class="col-2">
+        <kendo-dropdownlist class="input-field" [data]="stateList" textField="name" valueField="value"
+            style="padding: 5px;">
+        </kendo-dropdownlist>
+    </div>
+    <div class="col-2">
+        <kendo-dropdownlist class="input-field" [data]="stateList" textField="name" valueField="value"
+            style="padding: 5px;">
+        </kendo-dropdownlist>
+    </div>
+    <div class="ms-auto col-2 text-right d-flex justify-content-end align-items-center">
+       <div class="text-right">
+            <kendo-switch [(ngModel)]="checked" style="padding: 20px;"></kendo-switch>
+            Auto Sync
+       </div>
+    </div>
+    <div class="col-1">
+        <kendo-dropdownlist class="input-field" [data]="stateList" textField="name" valueField="value"
+            style="padding: 5px;">
+        </kendo-dropdownlist>
+    </div>
+</div>
+<div class="row">
+    <div class="col" style="height: 400px !important;">
+        <canvas id="myChart" style="height: 400px !important;"></canvas>
+    </div>
+</div>

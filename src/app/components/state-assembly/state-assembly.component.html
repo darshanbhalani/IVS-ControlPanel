@@ -1,12 +1,12 @@
 <div class="row">
-    <div class="col-4 mb-3">
+    <div class="col-6 mb-3">
         <div id="chart-container"></div>
     </div>
-    <div class="col-8">
+    <div class="col-6">
         <div class="row">
             <div class="col">
-                <kendo-dropdownlist class="input-field" [data]="stateList" textField="name" valueField="value"
-                    (valueChange)="updateMap($event)" [valuePrimitive]="true" style="padding: 5px;" [value]="'Andhra Pradesh'">
+                <kendo-dropdownlist class="input-field" [data]="stateList" textField="name" valueField="value" 
+                    (valueChange)="updateMap($event)" style="padding: 5px;" >
                 </kendo-dropdownlist>
             </div>
         </div>
@@ -24,9 +24,11 @@
                             placeholder="Search in all columns..." 
                             (valueChange)="onFilter($event)"></kendo-textbox>
                     </ng-template>
-                    <kendo-grid-column field="asseblyName" title="Assemby Name" [width]=60>
+                    <kendo-grid-column field="asseblyName" title="Assemby Name" [width]=40>
                     </kendo-grid-column>
-                    <kendo-grid-column field="asseblyDistrict" title="District" [width]=40>
+                    <kendo-grid-column field="asseblyDistrict" title="District" [width]=30>
+                    </kendo-grid-column>
+                    <kendo-grid-column field="totalVoters" title="Total Voters" [width]=30>
                     </kendo-grid-column>
                 </kendo-grid>
             </div>

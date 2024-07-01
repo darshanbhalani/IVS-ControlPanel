@@ -1,21 +1,37 @@
-import { STRING_TYPE } from '@angular/compiler';
 import { Component, ViewChild } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { DataBindingDirective, ExcelModule, GridModule, PDFModule } from '@progress/kendo-angular-grid';
 import { SVGIcon, SVGIconModule } from '@progress/kendo-angular-icons';
 import { InputsModule } from '@progress/kendo-angular-inputs';
-import { LabelModule } from '@progress/kendo-angular-label';
 import { fileExcelIcon, filePdfIcon } from '@progress/kendo-svg-icons';
 import { StateServiceService } from '../../services/general/state-service.service';
 import { process } from '@progress/kendo-data-query';
+import { firstValueFrom } from 'rxjs';
 
 declare var FusionCharts: any;
 interface Assembly {
   asseblyId: number;
   asseblyName: string;
   asseblyDistrict: string;
+  fusionDistrictId: string;
+}
+
+interface ApiResponse {
+  success: boolean;
+  header: {
+      requestTime: string;
+      responsTime: string;
+  };
+  body: {
+      data: Assembly[];
+  };
+}
+
+interface DistrictData {
+  id: string;
+  value: number;
+  showLabel: string;
 }
 
 interface DataSource {
@@ -25,6 +41,7 @@ interface DataSource {
     formatNumberScale: string;
     numberSuffix: string;
     entityFillHoverColor: string;
+    entityHoverBorderColor:string;
     showLabels: string;
     showTooltip: string;
   };
@@ -58,13 +75,12 @@ interface DataSource {
   templateUrl: './state-assembly.component.html',
   styleUrl: './state-assembly.component.scss'
 })
-
 export class StateAssemblyComponent {
   @ViewChild(DataBindingDirective) dataBinding!: DataBindingDirective;
 
-  gridData:Assembly[]= [];
-  gridView: Assembly[]=[];
-  stateList:any = [];
+  gridData: Assembly[] = [];
+  gridView: Assembly[] = [];
+  stateList: any = [];
   public pdfSVG: SVGIcon = filePdfIcon;
   public excelSVG: SVGIcon = fileExcelIcon;
   scrollable: 'none' | 'scrollable' | 'virtual' = 'scrollable';
@@ -78,186 +94,51 @@ export class StateAssemblyComponent {
     previousNext: true
   };
 
-
-
   constructor(private dataService: StateServiceService) {
     this.getData();
 
     this.dataSources = {
-      // india: {
-      //   chart: {
-      //     caption: "Map of India",
-      //     theme: "fusion",
-      //     formatNumberScale: "0",
-      //     numberSuffix: "",
-      //     entityFillHoverColor: "#FFF9C4",
-      //     showLabels: "1",
-      //     showTooltip: "1"
-      //   },
-      //   data: []
-      // },
-      // gujarat: {
-      //   chart: {
-      //     caption: "Districts of Gujarat",
-      //     theme: "fusion",
-      //     formatNumberScale: "0",
-      //     numberSuffix: "",
-      //     entityFillHoverColor: "#FFF9C4",
-      //     showLabels: "1",
-      //     showTooltip: "1"
-      //   },
-      //   colorrange: {
-      //     gradient: "1",
-      //     color: [
-      //       {
-      //         minvalue: "0",
-      //         maxvalue: "50",
-      //         code: "#7AB2B2"
-      //       },
-      //       {
-      //         minvalue: "51",
-      //         maxvalue: "100",
-      //         code: "#4D869C"
-      //       },
-      //       {
-      //         minvalue: "101",
-      //         maxvalue: "200",
-      //         code: "#006989"
-      //       }
-      //     ]
-      //   },
-      //   data: [
-      //     {
-      //       id: "IN.GU.AH",
-      //       value: 80,
-      //       showLabel: "1"
-      //     },
-      //     {
-      //       id: "IN.GU.BK",
-      //       value: 150,
-      //       showLabel: "1"
-      //     }
-      //   ]
-      // },
-      // maharashtra: {
-      //   chart: {
-      //     caption: "Districts of Maharashtra",
-      //     theme: "fusion",
-      //     formatNumberScale: "0",
-      //     numberSuffix: "",
-      //     entityFillHoverColor: "#FFF9C4",
-      //     showLabels: "1",
-      //     showTooltip: "1"
-      //   },
-      //   colorrange: {
-      //     gradient: "1",
-      //     color: [
-      //       {
-      //         minvalue: "0",
-      //         maxvalue: "50",
-      //         code: "#FFD74D"
-      //       },
-      //       {
-      //         minvalue: "51",
-      //         maxvalue: "100",
-      //         code: "#FB8C00"
-      //       },
-      //       {
-      //         minvalue: "101",
-      //         maxvalue: "200",
-      //         code: "#E65100"
-      //       }
-      //     ]
-      //   },
-      //   data: [
-      //     {
-      //       id: "IN.MH.MU",
-      //       value: 120,
-      //       showLabel: "1"
-      //     },
-      //     {
-      //       id: "IN.MH.PU",
-      //       value: 90,
-      //       showLabel: "1"
-      //     }
-      //   ]
-      // },
-      // karnataka: {
-      //   chart: {
-      //     caption: "Districts of Karnataka",
-      //     theme: "fusion",
-      //     formatNumberScale: "0",
-      //     numberSuffix: "",
-      //     entityFillHoverColor: "#FFF9C4",
-      //     showLabels: "1",
-      //     showTooltip: "1"
-      //   },
-      //   colorrange: {
-      //     gradient: "1",
-      //     color: [
-      //       {
-      //         minvalue: "0",
-      //         maxvalue: "50",
-      //         code: "#FFD74D"
-      //       },
-      //       {
-      //         minvalue: "51",
-      //         maxvalue: "100",
-      //         code: "#FB8C00"
-      //       },
-      //       {
-      //         minvalue: "101",
-      //         maxvalue: "200",
-      //         code: "#E65100"
-      //       }
-      //     ]
-      //   },
-      //   data: [
-      //     {
-      //       id: "IN.KA.BG",
-      //       value: 110,
-      //       showLabel: "1"
-      //     },
-      //     {
-      //       id: "IN.KA.MY",
-      //       value: 70,
-      //       showLabel: "1"
-      //     }
-      //   ]
-      // }
-      'state':{
-          chart: {
-            caption: "",
-            theme: "fusion",
-            formatNumberScale: "0",
-            numberSuffix: "",
-            entityFillHoverColor: "#4D869C",
-            showLabels: "1",
-            showTooltip: "1"
-          },
-          colorrange: {
-            gradient: "1",
-            color: [
-              {
-                minvalue: "0",
-                maxvalue: (this.gridData.length).toString(),
-                code: "#7AB2B2"
-              }
-             
-            ]
-          },
-          data: [
-            
+      'state': {
+        chart: {
+          caption: "",
+          theme: "fusion",
+          formatNumberScale: "0",
+          numberSuffix: "",
+          entityFillHoverColor: "#E88D67",
+          entityHoverBorderColor: "#005C78",
+          showLabels: "1",
+          showTooltip: "1"
+        },
+        colorrange: {
+          gradient: "0",
+          color: [
+            {
+              minvalue: "1",
+              maxvalue: "5",
+              code: "#CAF4FF"
+            },
+            {
+              minvalue: "5",
+              maxvalue: "10",
+              code: "#8ECDDD"
+            },
+            {
+              minvalue: "10",
+              maxvalue: "50",
+              code: "#03AED2"
+            }
           ]
         },
+        data: []
+      },
     };
   }
 
   async ngOnInit() {
     this.removeKendoInvalidLicance();
-    await this.getAllAssemblies(0);
+    await this.getAllAssemblies(7);
     console.log(this.stateList);
-    this.renderChart('AndhraPradesh', this.dataSources['state']);
+    this.renderChart('gujarat', this.dataSources['state']);
   }
 
   getData() {
@@ -279,15 +160,20 @@ export class StateAssemblyComponent {
         width: '100%',
         height: '600',
         dataFormat: 'json',
-        dataSource: dataSource
+        dataSource: dataSource,
+        events: {
+          entityClick: (eventObj: any, dataObj: any) => {
+            this.onDistrictClick(dataObj.id);
+          }
+        }
       });
       myChart.render();
     });
   }
 
-  updateMap(event: any) {
-    this.getAllAssemblies(event);
-    const name = this.stateList.find((item:any) => item.value === event)?.name;
+  async updateMap(event: any) {
+    await this.getAllAssemblies(event);
+    const name = this.stateList.find((item: any) => item.value === event)?.name;
     if (name) {
       this.renderChart(name.toString().toLowerCase().trim().replace(/\s+/g, ""), this.dataSources['state']);
     } else {
@@ -295,20 +181,17 @@ export class StateAssemblyComponent {
     }
   }
 
-  getAllAssemblies(stateId: any) {
-    this.dataService.GetAllAssemblyByState(stateId).subscribe(
-      (response: any) => {
-        this.gridData = response.body.data;
-        this.gridView = response.body.data;
-
-      },
-      (error: any) => {
-        console.error('Error fetching data:', error);
-      }
-    );
-   
+  async getAllAssemblies(stateId: any) {
+    try {
+      const response: any = await firstValueFrom(this.dataService.GetAllAssemblyByState(stateId));
+      this.gridData = response.body.data;
+      this.gridView = response.body.data;
+      this.dataSources['state'].data = this.transformData(response);
+      
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   }
-
 
   public onFilter(value: Event): void {
     const inputValue = value;
@@ -325,7 +208,7 @@ export class StateAssemblyComponent {
             field: "asseblyDistrict",
             operator: "contains",
             value: inputValue,
-          }          
+          }
         ],
       },
     }).data;
@@ -346,5 +229,41 @@ export class StateAssemblyComponent {
         console.log('Watermark element not found.');
       }
     }, 0);
+  }
+
+  transformData = (response: ApiResponse): DistrictData[] => {
+    const districtCount: { [key: string]: number } = {};
+
+    response.body.data.forEach((assembly) => {
+      if (districtCount[assembly.fusionDistrictId]) {
+        districtCount[assembly.fusionDistrictId]++;
+      } else {
+        districtCount[assembly.fusionDistrictId] = 1;
+      }
+    });
+
+    const transformedData: DistrictData[] = Object.keys(districtCount).map((district) => ({
+      id: district,
+      value: districtCount[district],
+      showLabel: "1"
+    }));
+    console.log(this.dataSources['state'].data.values);
+    return transformedData;
+  };
+
+  onDistrictClick(districtId: string) {
+    console.log(districtId);
+    this.gridView = this.gridData.filter(assembly => assembly.fusionDistrictId.toLocaleLowerCase() === districtId);
+    this.dataBinding.skip = 0; 
+  }
+
+  exportToExcel(): void {
+    this.gridView = this.gridData;
+    this.dataBinding.skip = 0;
+  }
+
+  exportToPDF(): void {
+    this.gridView = this.gridData;
+    this.dataBinding.skip = 0;
   }
 }

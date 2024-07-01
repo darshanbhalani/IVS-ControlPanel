@@ -8,6 +8,7 @@ import { PartiesComponent } from './components/parties/parties.component';
 import { LoginComponent } from './components/login/login.component';
 import { ErrorComponent } from './components/error/error.component';
 import { authGuard } from './guard/auth/auth.guard';
+import { LiveElectionsComponent } from './components/live-elections/live-elections.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -18,6 +19,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'elections', component: StateElectionsComponent, pathMatch: 'full' },
+      { path: 'liveelections', component:LiveElectionsComponent, pathMatch: 'full' },
       { path: 'assembly', component: StateAssemblyComponent, pathMatch: 'full' },
       { path: 'candidates', component: StateCandidatesComponent, pathMatch: 'full' },
       { path: 'results', component: StateResultsComponent, pathMatch: 'full' }
