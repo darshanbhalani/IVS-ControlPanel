@@ -25,7 +25,12 @@ export class PartyServiceService {
     return this.http.get(`https://localhost:7013/ElectionParty/VefifyParty?partyid=${partyid}&verifiedby=${actionby}`);
   }
 
-  addParty(partyid: number, actionby: number): Observable<any> {
-    return this.http.get(`https://localhost:7013/ElectionParty/VefifyParty?partyid=${partyid}&verifiedby=${actionby}`);
+  addNewParty(party: any): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    console.log(party);
+    console.log("service called...");
+    return this.http.post(`https://localhost:7013/ElectionParty/AddNewParty`, party);
   }
 }

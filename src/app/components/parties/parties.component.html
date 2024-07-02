@@ -18,7 +18,7 @@
     </ng-template>
     <kendo-grid-column field="electionPartyLogoUrl" title="Party Logo" [width]="10">
         <ng-template kendoGridCellTemplate let-dataItem>
-            <img [src]="dataItem.electionPartyLogoUrl" alt="Party Logo" style="max-width: 50px; max-height: 50px;">
+            <img [src]="'data:image/jpeg;base64,'+dataItem.electionPartyLogoUrl" alt="Party Logo" style="max-width: 50px; max-height: 50px;">
         </ng-template>
     </kendo-grid-column>
     <kendo-grid-column field="electionPartyName" title="Party Name" [width]="80">
@@ -82,12 +82,13 @@
                             <br>
                             <input id="file-upload" type="file" (change)="onFileChange($event)"/>
                     </div>
+                    <div class="error-text text-center text-danger pt-1">{{error}}</div>
                 </div>
             </fieldset>
         </form>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click');">Save</button>
+        <button type="button" class="btn btn-outline-dark" (click)="addNewParty()">Save</button>
     </div>
 </ng-template>
 

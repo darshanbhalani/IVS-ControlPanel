@@ -58,4 +58,9 @@ export class UserService {
     this.userRoleId.next(Number(decodedToken["employeeRoleId"]));
   }
 
+  getUserId():any{
+    const decodedToken:any = jwtDecode(`${this.getToken()}`) as Object;
+    return decodedToken["employeeId"];
+  }
+
 }
