@@ -82,7 +82,7 @@ export class PartiesComponent {
         this.gridView = this.gridData;
       },
       (error: any) => {
-        console.error('Error fetching data:', error);
+        this.snackbarService.showToast(false,"Error fetching data.");
       }
     );
   }
@@ -135,17 +135,17 @@ export class PartiesComponent {
 
 
   verifyParty(content: any) {
-    alert(this.partyId);
     this.dataService.verifyParty(this.partyId, 1).subscribe(
       (response: any) => {
         if (response) {
           this.modalService.dismissAll(content);
+          this.snackbarService.showToast(true,response.body.message);
         } else {
-          console.log(response.body.error);
+          this.error = response.body.error;
         }
       },
       (error: any) => {
-        console.error('Error fetching data:', error.body.error);
+        this.error="Some thing went wrong."
       }
     );
   }
@@ -163,6 +163,10 @@ export class PartiesComponent {
           this.modalService.dismissAll();
           this.getData();
           this.snackbarService.showToast(true,response.body.message);
+          this.error="";
+          this.selectedFile=null;
+          this.imageSrc=null;
+          this.form.reset();
         } else {
           this.error = response.body.error;
         }
@@ -186,9 +190,7 @@ export class PartiesComponent {
       const watermarkElement = document.querySelector('div[kendowatermarkoverlay]');
       if (watermarkElement) {
         watermarkElement.remove();
-        console.log('Watermark removed successfully.');
       } else {
-        console.log('Watermark element not found.');
       }
     }, 0);
   }

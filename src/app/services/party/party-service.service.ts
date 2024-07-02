@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { UserService } from '../user/user.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PartyServiceService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private userService : UserService) {}
 
   getAllParties(): Observable<any[]> {
     return this.http.get<any[]>("https://localhost:7013/ElectionParty/GetAllParties");
@@ -29,8 +30,7 @@ export class PartyServiceService {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
-    console.log(party);
-    console.log("service called...");
+    party.append("createdBy",this.userService.getUserId());
     return this.http.post(`https://localhost:7013/ElectionParty/AddNewParty`, party);
   }
 }
