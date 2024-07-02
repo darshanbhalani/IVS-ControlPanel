@@ -1,10 +1,14 @@
 import { Component } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { ExcelModule, GridModule, PDFModule } from '@progress/kendo-angular-grid';
 import { SVGIconModule } from '@progress/kendo-angular-icons';
-import { InputsModule } from '@progress/kendo-angular-inputs';
+import { InputsModule, SwitchModule } from '@progress/kendo-angular-inputs';
+import { LabelModule } from '@progress/kendo-angular-label';
 import { SVGIcon, plusIcon,fileExcelIcon, filePdfIcon } from '@progress/kendo-svg-icons';
+import { log } from 'console';
 
 @Component({
   selector: 'app-state-candidates',
@@ -16,13 +20,24 @@ import { SVGIcon, plusIcon,fileExcelIcon, filePdfIcon } from '@progress/kendo-sv
     SVGIconModule,
     ExcelModule,
     PDFModule,
-    ButtonModule
+    ButtonModule,
+    ReactiveFormsModule,
+    LabelModule,
+    DropDownsModule,
+    SwitchModule,
+    FormsModule
   ],
   templateUrl: './state-candidates.component.html',
   styleUrl: './state-candidates.component.scss'
 })
 export class StateCandidatesComponent {
   gridData=[];
+  stateList:any;
+  stateControl: FormControl;
+  error="";
+  selectedFile:any;
+  imageSrc: string | ArrayBuffer | null = null;
+  public checked = false;
   public pageableSettings: any = {
     buttonCount: 5,
     info: true,
@@ -34,25 +49,63 @@ export class StateCandidatesComponent {
   public excelSVG: SVGIcon = fileExcelIcon;
   public plusIcon: SVGIcon = plusIcon;
   
+  
+  public form: FormGroup = new FormGroup({
+    candidateName: new FormControl(),
+    candidateGender: new FormControl(),
+    candidateEpic: new FormControl(),
+    candidateProfileUrl: new FormControl(),
+    candidateElectionId: new FormControl(),
+    candidateAssemblyId: new FormControl()
+  });
+
+
+  constructor( private modalService: NgbModal){
+    this.stateControl = new FormControl('AK'); 
+  }
+
+
   ngOnInit() {
     this.removeKendoInvalidLicance();
   }
+  
+
+  openAddModal(event: Event, content: any) {
+    event.preventDefault();
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'lg' });
+  }
+
+  
+  onFileChange(event:any){
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.selectedFile = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        this.imageSrc = e.target?.result as string | ArrayBuffer;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
+
+
+  toggle(){
+    this.checked=!this.checked;
+    console.log("Called..");
+    console.log(this.checked);
+  }
+
 
   removeKendoInvalidLicance() {
     setTimeout(() => {
-      // Remove the banner with the unique text content
       const banner = Array.from(document.querySelectorAll('div')).find((el) =>
         el.textContent?.includes('No valid license found for Kendo UI for Angular')
       );
       if (banner) banner.remove();
-  
-      // Remove the watermark element
       const watermarkElement = document.querySelector('div[kendowatermarkoverlay]');
       if (watermarkElement) {
         watermarkElement.remove();
-        console.log('Watermark removed successfully.');
       } else {
-        console.log('Watermark element not found.');
       }
     }, 0); 
   }

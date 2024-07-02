@@ -47,7 +47,6 @@ export class PartiesComponent {
   userRole$ = this.userService.userRoleId$;
   selectedFile:any; 
   selectedItem: any;
-  showPopup = false;
   imageSrc: string | ArrayBuffer | null = null;
   public pdfSVG: SVGIcon = filePdfIcon;
   public excelSVG: SVGIcon = fileExcelIcon;
