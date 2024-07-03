@@ -1,7 +1,8 @@
+@if((userRole$ | async)==1){
 <button kendoButton class="k-btn mb-3" [svgIcon]="plusIcon" (click)="openAddModal($event, addModal)"
     style="padding: 8px; font-weight: bolder; padding-left: 15px; padding-right: 15px;">
     Add New Party
-</button>
+</button>}
 <kendo-grid  [kendoGridBinding]="gridView"
   [pageSize]="20" [pageable]="pageableSettings"
     [sortable]="true" [groupable]="true" [reorderable]="true" [resizable]="true"
@@ -31,8 +32,8 @@
             }@else {
                 <i class="fa-solid fa-circle-info text-danger"></i>
                 <span>&nbsp;{{dataItem.verificationStatus}}</span>
-                @if((userRole$ | async) == 1){
-                    <button class="ms-3 btn btn-warning" (click)="openVerifyModal($event, verifyModal,dataItem.electionPartyId)">Verify</button>
+                @if((userRole$ | async) == 2){
+                    <button class="ms-3 btn btn-warning" (click)="openVerifyModal($event, verifyModal,dataItem.electionPartyId,dataItem.electionPartyName)">Verify</button>
                 }
             }
         </ng-template>
@@ -100,7 +101,7 @@
     </div>
     <div class="modal-body">
         <div>
-            You are sure! You want to verify party details ?
+            You are sure! You want to verify <b>{{partyName}}</b> party details ?
         </div>
         <div class="error-text text-center text-danger pt-1">{{error}}</div>
     </div>

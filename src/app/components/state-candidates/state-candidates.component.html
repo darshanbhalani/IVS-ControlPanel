@@ -4,7 +4,7 @@
 </button>
 <div class="col-12 kendo-grid-data d-flex justify-content-center flex-column">
     <div class="kendo-grid-data">
-        <kendo-grid [kendoGridBinding]="gridData" kendoGridSelectBy="id" [pageSize]="20" [pageable]="pageableSettings"
+        <kendo-grid [kendoGridBinding]="gridView" kendoGridSelectBy="id" [pageSize]="20" [pageable]="pageableSettings"
             [sortable]="true" [groupable]="true" [reorderable]="true" [resizable]="true"
             [columnMenu]="{ filter: true }">
             <ng-template kendoGridToolbarTemplate>
@@ -12,16 +12,35 @@
                     Export to Excel
                 </button>
                 <button kendoGridPDFCommand [svgIcon]="pdfSVG" style="padding: 8px;">Export to PDF</button>
-                <kendo-textbox class="ms-auto" style="width: 50%; padding: 5px;"
-                    placeholder="Search in all columns..."></kendo-textbox>
+                <kendo-textbox class="ms-auto" style="width: 50%; padding: 5px;" placeholder="Search in all columns...">
+                </kendo-textbox>
             </ng-template>
-            <kendo-grid-column field="ProductID" title="Candidate Name" [width]=30>
+            <kendo-grid-column field="electionPartyLogoUrl" title="Party Logo" [width]="10">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    <img [src]="'data:image/jpeg;base64,'+dataItem.profileUrl" alt="Logo" style="max-width: 50px; max-height: 50px;">
+                </ng-template>
             </kendo-grid-column>
-            <kendo-grid-column field="ProductName" title="Party" [width]=20>
+            <kendo-grid-column field="name" title="Candidate Name" [width]="22">
             </kendo-grid-column>
-            <kendo-grid-column field="Category.CategoryName" title="Assembly Seat No." [width]=20>
+            <kendo-grid-column field="gender" title="Gender" [width]="11">
             </kendo-grid-column>
-            <kendo-grid-column field="Category.CategoryName" title="Assembly Seat Name" [width]=20>
+            <kendo-grid-column field="partyName" title="Party Name" [width]="22">
+            </kendo-grid-column>
+            <kendo-grid-column field="assemblyName" title="Assembly Name" [width]="20">
+            </kendo-grid-column>
+            <kendo-grid-column field="verificationStatus" title="Verification Status" [width]="15">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    @if(dataItem.verificationStatus ==='Verified'){
+                        <i class="fa-solid fa-circle-check text-success"></i>
+                        <span>&nbsp;{{dataItem.verificationStatus}}</span>
+                    }@else {
+                        <i class="fa-solid fa-circle-info text-danger"></i>
+                        <span>&nbsp;{{dataItem.verificationStatus}}</span>
+                        @if((2) == 2){
+                            <button class="ms-3 btn btn-warning" >Verify</button>
+                        }
+                    }
+                </ng-template>
             </kendo-grid-column>
         </kendo-grid>
     </div>
@@ -37,32 +56,12 @@
         <form class="k-form k-form-md" [formGroup]="form">
             <fieldset class="k-form-fieldset">
                 <div class="row">
-                    <!--<div class="col d-flex justify-content-center align-items-center text-center image-box-col">
-                         @if(imageSrc){
-                            <div class="image-box" [class.empty]="!imageSrc">
-                                <img [src]="imageSrc" alt="Uploaded Image"/>
-                            </div>
-                        }
-                        @else {
-                            <div class="image-box d-grid align-items-center">No Image Uploaded</div>
-                        } 
-                    </div> -->
                     <div class="col-6">
                         <kendo-formfield>
-                            <form class="k-form k-form-md" [formGroup]="form">
-                                <fieldset class="k-form-fieldset">
-                                    <kendo-formfield>
-                                        <kendo-label  text="Candidate Name"></kendo-label>
-                                        <kendo-textbox
-                                          style="padding:5px;"
-                                          formControlName="partyName"
-                                          [clearButton]="true"
-                                          #username
-                                          required
-                                        ></kendo-textbox>
-                                    </kendo-formfield>
-                                </fieldset>
-                            </form>
+                            <kendo-label text="Candidate Voter APIC Number"></kendo-label>
+                            <kendo-textbox style="padding:5px;" formControlName="voterApicNumber" [clearButton]="true"
+                                required>
+                            </kendo-textbox>
                         </kendo-formfield>
                     </div>
                     <div class="col-6 d-flex align-items-end">
@@ -70,84 +69,74 @@
                             Fetch Details
                         </button>
                     </div>
-                    <div class="col-6">
+                    <div class="col-6 mt-3">
                         <kendo-formfield>
-                            <form class="k-form k-form-md" [formGroup]="form">
-                                <fieldset class="k-form-fieldset">
-                                    <kendo-formfield>
-                                        <kendo-label  text="Candidate Name"></kendo-label>
-                                        <kendo-textbox
-                                          style="padding:5px;"
-                                          formControlName="partyName"
-                                          [clearButton]="true"
-                                          #username
-                                          required
-                                        ></kendo-textbox>
-                                    </kendo-formfield>
-                                </fieldset>
-                            </form>
+                            <kendo-label text="Candidate Name"></kendo-label>
+                            <kendo-textbox style="padding:5px;" formControlName="candidateName" [clearButton]="true"
+                                required>
+                            </kendo-textbox>
                         </kendo-formfield>
                     </div>
-                    <div class="col-6">
+                    <div class="col-6 mt-3">
                         <kendo-formfield>
-                            <form class="k-form k-form-md" [formGroup]="form">
-                                <fieldset class="k-form-fieldset">
-                                    <kendo-formfield>
-                                        <kendo-label  text="Candidate Name"></kendo-label>
-                                        <kendo-textbox
-                                          style="padding:5px;"
-                                          formControlName="partyName"
-                                          [clearButton]="true"
-                                          #username
-                                          required
-                                        ></kendo-textbox>
-                                    </kendo-formfield>
-                                </fieldset>
-                            </form>
-                        </kendo-formfield>
-                    </div>
-                    <div class="col mt-3">
-                        <kendo-dropdownlist class="input-field bg-transparent" [data]="stateList" textField="name" valueField="value"
-                style="padding: 5px;">
-            </kendo-dropdownlist>
-                    </div>
-                    <div class="col mt-3">
-                        <kendo-dropdownlist class="input-field bg-transparent" [data]="stateList" textField="name" valueField="value"
-                style="padding: 5px;">
-            </kendo-dropdownlist>
-                    </div>
-                    <div class="mt-4 p-0 m-0 row d-flex justify-content-center align-items-center">
-                        <div class="col-6 d-flex justify-content-center align-items-center flex-column">
-                           <span>Independent Candidate <kendo-switch [(ngModel)]="checked" (valueChange)="toggle()"  [size]="'small'"></kendo-switch></span>
-                          @if(checked){
-                            <label for="file-upload" class="custom-file-upload pt-3 pb-2">
-                                <i class="fa fa-cloud-upload"></i> Upload Image (200 x 200 px)
-                              </label>
-                          <input id="file-upload" type="file" (change)="onFileChange($event)"/>
-                          }
-                        </div>
-                        @if(!checked){
-                            <div class="col-6">
-                                <kendo-dropdownlist class="input-field bg-transparent" [data]="stateList" textField="name" valueField="value" 
-                                style="padding: 5px;">
+                            <kendo-label text="Candidate Gender"></kendo-label>
+                            <kendo-dropdownlist [data]="genderList" formControlName="candidateGender" textField="name"
+                                valueField="value" style="padding: 5px;">
                             </kendo-dropdownlist>
-                            </div>
-                        }@else{
-                            <div class="col d-flex justify-content-center align-items-center text-center image-box-col">
-                                @if(imageSrc){
-                                    <div class="image-box" [class.empty]="!imageSrc">
-                                        <img [src]="imageSrc" alt="Uploaded Image"/>
-                                    </div>
-                                }
-                                @else {
-                                    <div class="image-box d-grid align-items-center">No Image Uploaded</div>
-                                }
-                            </div>
+                        </kendo-formfield>
+                    </div>
+                    <div class="col-6 mt-3">
+                        <kendo-formfield>
+                            <kendo-label text="District Name"></kendo-label>
+                            <kendo-dropdownlist [data]="districtList" formControlName="districtName" textField="name"
+                                valueField="value" style="padding: 5px;">
+                            </kendo-dropdownlist>
+                        </kendo-formfield>
+                    </div>
+                    <div class="col-6 mt-3">
+                        <kendo-formfield>
+                            <kendo-label text="Assembly Name"></kendo-label>
+                            <kendo-dropdownlist [data]="assemblyList" formControlName="assemblyName" textField="name"
+                                valueField="value" style="padding: 5px;">
+                            </kendo-dropdownlist>
+                        </kendo-formfield>
+                    </div>
+                    <div class="col-6 mt-3 d-flex align-items-center flex-column">
+                        <span>
+                            <kendo-label text="Independent Candidate"></kendo-label>
+                            <kendo-switch [(ngModel)]="checked" (valueChange)="toggle()" formControlName="isIndependent"
+                                [size]="'small'" style="margin-left: 10px;">
+                            </kendo-switch>
+                        </span>
+                        @if(checked){
+                                <label for="file-upload" class="custom-file-upload pt-3 pb-2">
+                                    <i class="fa fa-cloud-upload"></i> Upload Image (200 x 200 px)
+                                </label>
+                                <input id="file-upload" type="file" (change)="onFileChange($event)" />
                         }
                     </div>
-                    <div class="error-text text-center text-danger pt-1">{{error}}</div>
+                   
+                    @if(!checked){
+                    <div class="col-6 mt-3">
+                        <kendo-formfield>
+                            <kendo-label text="Party Name"></kendo-label>
+                            <kendo-dropdownlist [data]="partyList" formControlName="partyName" textField="name"
+                                valueField="value" style="padding: 5px;">
+                            </kendo-dropdownlist>
+                        </kendo-formfield>
+                    </div>
+                }
+                    @else{
+                        <div class="col-6 mt-3 image-box-col">
+                        <div class="image-box">
+                            <img [src]="imageSrc" alt="Uploaded Image" class="text-center"/>
+                        </div>
+                    </div>
+                    }
+                    <div class="col-12 mt-3 text-center text-danger">
+                        {{ error }}
+                    </div>
                 </div>
-                
             </fieldset>
         </form>
     </div>

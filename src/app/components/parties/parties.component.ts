@@ -38,14 +38,15 @@ import { SnackbarService } from '../../services/snackbar/snackbar.service';
 })
 
 export class PartiesComponent {
-  
+
   @ViewChild(DataBindingDirective) dataBinding!: DataBindingDirective;
   gridData = [];
   gridView: any[] = [];
   partyId: any;
-  error:string="";
+  partyName: any;
+  error: string = "";
   userRole$ = this.userService.userRoleId$;
-  selectedFile:any; 
+  selectedFile: any;
   selectedItem: any;
   imageSrc: string | ArrayBuffer | null = null;
   public pdfSVG: SVGIcon = filePdfIcon;
@@ -65,7 +66,7 @@ export class PartiesComponent {
   });
 
 
-  constructor(private dataService: PartyServiceService, private modalService: NgbModal, private userService: UserService,private snackbarService:SnackbarService) { }
+  constructor(private dataService: PartyServiceService, private modalService: NgbModal, private userService: UserService, private snackbarService: SnackbarService) { }
 
 
   ngOnInit() {
@@ -81,7 +82,7 @@ export class PartiesComponent {
         this.gridView = this.gridData;
       },
       (error: any) => {
-        this.snackbarService.showToast(false,"Error fetching data.");
+        this.snackbarService.showToast(false, "Error fetching data.");
       }
     );
   }
@@ -101,7 +102,6 @@ export class PartiesComponent {
         ],
       },
     }).data;
-
     this.dataBinding.skip = 0;
   }
 
@@ -112,10 +112,10 @@ export class PartiesComponent {
   }
 
 
-  openVerifyModal(event: Event, content: any, id: number) {
+  openVerifyModal(event: Event, content: any, id: any, name: any) {
     event.preventDefault();
     this.partyId = id;
-    alert(id);
+    this.partyName = name;
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'lg' });
   }
 
@@ -138,13 +138,16 @@ export class PartiesComponent {
       (response: any) => {
         if (response) {
           this.modalService.dismissAll(content);
-          this.snackbarService.showToast(true,response.body.message);
+          this.snackbarService.showToast(true, response.body.message);
+          this.getData();
+          this.partyId = null;
+          this.partyName = null;
         } else {
           this.error = response.body.error;
         }
       },
       (error: any) => {
-        this.error="Some thing went wrong."
+        this.error = "Some thing went wrong."
       }
     );
   }
@@ -152,31 +155,35 @@ export class PartiesComponent {
 
   addNewParty() {
     if (this.form.valid) {
-      const fData = new FormData();
-      fData.append('electionPartyName', this.form.get('partyName')?.value!);
-      fData.append('image', this.selectedFile);
+      if (this.selectedFile != null) {
+        const fData = new FormData();
+        fData.append('electionPartyName', this.form.get('partyName')?.value!);
+        fData.append('image', this.selectedFile);
 
-    this.dataService.addNewParty(fData).subscribe(
-      (response: any) => {
-        if (response.success) {
-          this.modalService.dismissAll();
-          this.getData();
-          this.snackbarService.showToast(true,response.body.message);
-          this.error="";
-          this.selectedFile=null;
-          this.imageSrc=null;
-          this.form.reset();
-        } else {
-          this.error = response.body.error;
-        }
-      },
-      (error: any) => {
-        this.error="Some thing went wrong."
+        this.dataService.addNewParty(fData).subscribe(
+          (response: any) => {
+            if (response.success) {
+              this.modalService.dismissAll();
+              this.getData();
+              this.snackbarService.showToast(true, response.body.message);
+              this.error = "";
+              this.selectedFile = null;
+              this.imageSrc = null;
+              this.form.reset();
+            } else {
+              this.error = response.body.error;
+            }
+          },
+          (error: any) => {
+            this.error = "Some thing went wrong."
+          }
+        );
+      } else {
+        this.error = 'Please upload party logo.';
       }
-    );
-  } else {
-    this.error = 'Please enter party name.';
-  }
+    }else {
+      this.error = 'Please enter party name.';
+    }
   }
 
 

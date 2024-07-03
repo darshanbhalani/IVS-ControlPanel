@@ -5,11 +5,12 @@ import { DataBindingDirective, ExcelModule, GridModule, PDFModule } from '@progr
 import { SVGIcon, SVGIconModule } from '@progress/kendo-angular-icons';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { fileExcelIcon, filePdfIcon } from '@progress/kendo-svg-icons';
-import { StateServiceService } from '../../services/general/state-service.service';
 import { process } from '@progress/kendo-data-query';
 import { firstValueFrom } from 'rxjs';
+import { GeneralService } from '../../services/general/general.service';
 
 declare var FusionCharts: any;
+
 interface Assembly {
   asseblyId: number;
   asseblyName: string;
@@ -77,7 +78,6 @@ interface DataSource {
 })
 export class StateAssemblyComponent {
   @ViewChild(DataBindingDirective) dataBinding!: DataBindingDirective;
-
   gridData: Assembly[] = [];
   gridView: Assembly[] = [];
   stateList: any = [];
@@ -85,7 +85,6 @@ export class StateAssemblyComponent {
   public excelSVG: SVGIcon = fileExcelIcon;
   scrollable: 'none' | 'scrollable' | 'virtual' = 'scrollable';
   dataSources: { [key: string]: DataSource };
-
   public pageableSettings: any = {
     buttonCount: 5,
     info: true,
@@ -94,9 +93,9 @@ export class StateAssemblyComponent {
     previousNext: true
   };
 
-  constructor(private dataService: StateServiceService) {
-    this.getData();
 
+  constructor(private generalService: GeneralService) {
+    this.getData();
     this.dataSources = {
       'state': {
         chart: {
@@ -134,6 +133,7 @@ export class StateAssemblyComponent {
     };
   }
 
+
   async ngOnInit() {
     this.removeKendoInvalidLicance();
     await this.getAllAssemblies(7);
@@ -141,8 +141,9 @@ export class StateAssemblyComponent {
     this.renderChart('gujarat', this.dataSources['state']);
   }
 
+
   getData() {
-    this.dataService.GetAllStates().subscribe(
+    this.generalService.getAllStates().subscribe(
       (response: any) => {
         this.stateList = response.body.data.map((state: any) => ({ name: state.stateName, value: state.stateId }));
       },
@@ -151,6 +152,7 @@ export class StateAssemblyComponent {
       }
     );
   }
+
 
   renderChart(type: string, dataSource: any) {
     FusionCharts.ready(() => {
@@ -171,6 +173,7 @@ export class StateAssemblyComponent {
     });
   }
 
+
   async updateMap(event: any) {
     await this.getAllAssemblies(event);
     const name = this.stateList.find((item: any) => item.value === event)?.name;
@@ -181,17 +184,18 @@ export class StateAssemblyComponent {
     }
   }
 
+
   async getAllAssemblies(stateId: any) {
     try {
-      const response: any = await firstValueFrom(this.dataService.GetAllAssemblyByState(stateId));
+      const response: any = await firstValueFrom(this.generalService.getAllAssemblyByState(stateId));
       this.gridData = response.body.data;
       this.gridView = response.body.data;
       this.dataSources['state'].data = this.transformData(response);
-      
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   }
+
 
   public onFilter(value: Event): void {
     const inputValue = value;
@@ -212,9 +216,47 @@ export class StateAssemblyComponent {
         ],
       },
     }).data;
-
     this.dataBinding.skip = 0;
   }
+
+  
+  transformData = (response: ApiResponse): DistrictData[] => {
+    const districtCount: { [key: string]: number } = {};
+    response.body.data.forEach((assembly) => {
+      if (districtCount[assembly.fusionDistrictId]) {
+        districtCount[assembly.fusionDistrictId]++;
+      } else {
+        districtCount[assembly.fusionDistrictId] = 1;
+      }
+    });
+    const transformedData: DistrictData[] = Object.keys(districtCount).map((district) => ({
+      id: district,
+      value: districtCount[district],
+      showLabel: "1"
+    }));
+    console.log(this.dataSources['state'].data.values);
+    return transformedData;
+  };
+
+
+  onDistrictClick(districtId: string) {
+    console.log(districtId);
+    this.gridView = this.gridData.filter(assembly => assembly.fusionDistrictId.toLocaleLowerCase() === districtId);
+    this.dataBinding.skip = 0; 
+  }
+
+
+  exportToExcel(): void {
+    this.gridView = this.gridData;
+    this.dataBinding.skip = 0;
+  }
+
+
+  exportToPDF(): void {
+    this.gridView = this.gridData;
+    this.dataBinding.skip = 0;
+  }
+
 
   removeKendoInvalidLicance() {
     setTimeout(() => {
@@ -231,39 +273,4 @@ export class StateAssemblyComponent {
     }, 0);
   }
 
-  transformData = (response: ApiResponse): DistrictData[] => {
-    const districtCount: { [key: string]: number } = {};
-
-    response.body.data.forEach((assembly) => {
-      if (districtCount[assembly.fusionDistrictId]) {
-        districtCount[assembly.fusionDistrictId]++;
-      } else {
-        districtCount[assembly.fusionDistrictId] = 1;
-      }
-    });
-
-    const transformedData: DistrictData[] = Object.keys(districtCount).map((district) => ({
-      id: district,
-      value: districtCount[district],
-      showLabel: "1"
-    }));
-    console.log(this.dataSources['state'].data.values);
-    return transformedData;
-  };
-
-  onDistrictClick(districtId: string) {
-    console.log(districtId);
-    this.gridView = this.gridData.filter(assembly => assembly.fusionDistrictId.toLocaleLowerCase() === districtId);
-    this.dataBinding.skip = 0; 
-  }
-
-  exportToExcel(): void {
-    this.gridView = this.gridData;
-    this.dataBinding.skip = 0;
-  }
-
-  exportToPDF(): void {
-    this.gridView = this.gridData;
-    this.dataBinding.skip = 0;
-  }
 }

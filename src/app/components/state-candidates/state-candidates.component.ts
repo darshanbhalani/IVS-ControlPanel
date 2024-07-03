@@ -9,6 +9,8 @@ import { InputsModule, SwitchModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { SVGIcon, plusIcon,fileExcelIcon, filePdfIcon } from '@progress/kendo-svg-icons';
 import { log } from 'console';
+import { StateCandidateService } from '../../services/candidate/state-candidate.service';
+import { SnackbarService } from '../../services/snackbar/snackbar.service';
 
 @Component({
   selector: 'app-state-candidates',
@@ -32,11 +34,20 @@ import { log } from 'console';
 })
 export class StateCandidatesComponent {
   gridData=[];
+  gridView:any[]=[];
   stateList:any;
   stateControl: FormControl;
   error="";
   selectedFile:any;
+  districtList:any;
+  assemblyList:any;
+  partyList:any;
   imageSrc: string | ArrayBuffer | null = null;
+  genderList = [
+    {name:"Male" ,value:"M"},
+    {name:"Female" ,value:"F"},
+    {name:"Other" ,value:"O"}
+  ]
   public checked = false;
   public pageableSettings: any = {
     buttonCount: 5,
@@ -60,15 +71,29 @@ export class StateCandidatesComponent {
   });
 
 
-  constructor( private modalService: NgbModal){
+  constructor( private modalService: NgbModal,private snackbarService:SnackbarService,private dataService: StateCandidateService){
     this.stateControl = new FormControl('AK'); 
   }
 
 
   ngOnInit() {
     this.removeKendoInvalidLicance();
+    this.getdata();
   }
   
+
+  getdata(){
+    this.dataService.getAllCandidates(1).subscribe(
+      (response: any) => {
+        this.gridData = response.body.data;
+        this.gridView = this.gridData;
+      },
+      (error: any) => {
+        this.snackbarService.showToast(false, "Error fetching data.");
+      }
+    );
+  }
+
 
   openAddModal(event: Event, content: any) {
     event.preventDefault();

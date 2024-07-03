@@ -16,7 +16,11 @@ export class UserService {
   userRoleId$ = this.userRoleId.asObservable();
 
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { 
+    if(this.getToken() != null){
+      this.setUserData();
+    }
+  }
 
   login(username: string, password: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/Account/Login?userName=${username}&password=${password}`)
