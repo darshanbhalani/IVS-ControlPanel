@@ -27,9 +27,6 @@ export class PartyServiceService {
   }
 
   addNewParty(party: any): Observable<any> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
     party.append("createdBy",this.userService.getUserId());
     return this.http.post(`https://localhost:7013/ElectionParty/AddNewParty`, party);
   }

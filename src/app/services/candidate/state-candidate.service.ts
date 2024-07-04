@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { UserService } from '../user/user.service';
 
 @Injectable({
@@ -10,12 +10,10 @@ export class StateCandidateService {
 
   constructor(private http: HttpClient,private userService : UserService) {}
 
-  addNewCandidate(party: any): Observable<any> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-    party.append("createdBy",this.userService.getUserId());
-    return this.http.post(`https://localhost:7013/ElectionParty/AddNewParty`, party);
+  
+  addNewCandidate(candidate: any): Observable<any> {
+    console.log("Add Candidate...");
+    return this.http.post(`https://localhost:7013/Candidate/AddCandidate`, candidate);
   }
 
   getAllCandidates(electionId: any): Observable<any> {

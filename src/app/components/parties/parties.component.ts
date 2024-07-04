@@ -1,4 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { ExcelModule, GridModule, PDFModule, DataBindingDirective } from '@progress/kendo-angular-grid';
@@ -36,8 +37,7 @@ import { SnackbarService } from '../../services/snackbar/snackbar.service';
   templateUrl: './parties.component.html',
   styleUrl: './parties.component.scss'
 })
-
-export class PartiesComponent {
+export class PartiesComponent implements OnDestroy {
 
   @ViewChild(DataBindingDirective) dataBinding!: DataBindingDirective;
   gridData = [];
@@ -65,18 +65,17 @@ export class PartiesComponent {
     partyName: new FormControl(),
   });
 
+  private subscriptions: Subscription[] = [];
 
   constructor(private dataService: PartyServiceService, private modalService: NgbModal, private userService: UserService, private snackbarService: SnackbarService) { }
-
 
   ngOnInit() {
     this.removeKendoInvalidLicance();
     this.getData();
   }
 
-
   getData() {
-    this.dataService.getAllParties().subscribe(
+    const dataSubscription = this.dataService.getAllParties().subscribe(
       (response: any) => {
         this.gridData = response.body.data;
         this.gridView = this.gridData;
@@ -85,11 +84,11 @@ export class PartiesComponent {
         this.snackbarService.showToast(false, "Error fetching data.");
       }
     );
+    this.subscriptions.push(dataSubscription);
   }
 
-
   public onFilter(value: Event): void {
-    const inputValue = value;
+    const inputValue = (value.target as HTMLInputElement).value;
     this.gridView = process(this.gridData, {
       filter: {
         logic: "or",
@@ -105,12 +104,10 @@ export class PartiesComponent {
     this.dataBinding.skip = 0;
   }
 
-
   openAddModal(event: Event, content: any) {
     event.preventDefault();
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'lg' });
   }
-
 
   openVerifyModal(event: Event, content: any, id: any, name: any) {
     event.preventDefault();
@@ -118,7 +115,6 @@ export class PartiesComponent {
     this.partyName = name;
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'lg' });
   }
-
 
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -132,9 +128,8 @@ export class PartiesComponent {
     }
   }
 
-
   verifyParty(content: any) {
-    this.dataService.verifyParty(this.partyId, 1).subscribe(
+    const verifySubscription = this.dataService.verifyParty(this.partyId, 1).subscribe(
       (response: any) => {
         if (response) {
           this.modalService.dismissAll(content);
@@ -147,11 +142,11 @@ export class PartiesComponent {
         }
       },
       (error: any) => {
-        this.error = "Some thing went wrong."
+        this.error = "Something went wrong."
       }
     );
+    this.subscriptions.push(verifySubscription);
   }
-
 
   addNewParty() {
     if (this.form.valid) {
@@ -160,7 +155,7 @@ export class PartiesComponent {
         fData.append('electionPartyName', this.form.get('partyName')?.value!);
         fData.append('image', this.selectedFile);
 
-        this.dataService.addNewParty(fData).subscribe(
+        const addPartySubscription = this.dataService.addNewParty(fData).subscribe(
           (response: any) => {
             if (response.success) {
               this.modalService.dismissAll();
@@ -175,17 +170,17 @@ export class PartiesComponent {
             }
           },
           (error: any) => {
-            this.error = "Some thing went wrong."
+            this.error = "Something went wrong."
           }
         );
+        this.subscriptions.push(addPartySubscription);
       } else {
         this.error = 'Please upload party logo.';
       }
-    }else {
+    } else {
       this.error = 'Please enter party name.';
     }
   }
-
 
   removeKendoInvalidLicance() {
     setTimeout(() => {
@@ -196,8 +191,11 @@ export class PartiesComponent {
       const watermarkElement = document.querySelector('div[kendowatermarkoverlay]');
       if (watermarkElement) {
         watermarkElement.remove();
-      } else {
       }
     }, 0);
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }
