@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
-import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
+import { DropDownsModule, DropDownListComponent } from '@progress/kendo-angular-dropdowns';
 import { DataBindingDirective, ExcelModule, GridModule, PDFModule } from '@progress/kendo-angular-grid';
 import { SVGIcon, SVGIconModule } from '@progress/kendo-angular-icons';
 import { InputsModule } from '@progress/kendo-angular-inputs';
@@ -93,6 +93,7 @@ export class StateAssemblyComponent {
     previousNext: true
   };
 
+  @ViewChild('dropdown') dropdown!: DropDownListComponent;
 
   constructor(private generalService: GeneralService) {
     this.getData();
@@ -133,6 +134,12 @@ export class StateAssemblyComponent {
     };
   }
 
+  ngAfterViewInit(){
+    if (this.dropdown) {
+      this.dropdown.defaultItem = {name:"Gujarat",value:7};
+    }
+  }
+
 
   async ngOnInit() {
     this.removeKendoInvalidLicance();
@@ -142,10 +149,15 @@ export class StateAssemblyComponent {
   }
 
 
+
+ 
+
+
   getData() {
     this.generalService.getAllStates().subscribe(
       (response: any) => {
         this.stateList = response.body.data.map((state: any) => ({ name: state.stateName, value: state.stateId }));
+        console.log(this.stateList)
       },
       (error: any) => {
         console.error('Error fetching data:', error);
@@ -175,10 +187,9 @@ export class StateAssemblyComponent {
 
 
   async updateMap(event: any) {
-    await this.getAllAssemblies(event);
-    const name = this.stateList.find((item: any) => item.value === event)?.name;
-    if (name) {
-      this.renderChart(name.toString().toLowerCase().trim().replace(/\s+/g, ""), this.dataSources['state']);
+    await this.getAllAssemblies(event.value);
+    if (event.value) {
+      this.renderChart(event.name.toString().toLowerCase().trim().replace(/\s+/g, ""), this.dataSources['state']);
     } else {
       console.error('Selected item not found in the list.');
     }

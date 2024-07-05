@@ -8,7 +8,7 @@ import { SVGIconModule } from '@progress/kendo-angular-icons';
 import { InputsModule, SwitchModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { SVGIcon, plusIcon,fileExcelIcon, filePdfIcon } from '@progress/kendo-svg-icons';
-import { log } from 'console';
+import { log, Console } from 'console';
 import { StateCandidateService } from '../../services/candidate/state-candidate.service';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { Subscription } from 'rxjs';
@@ -90,6 +90,8 @@ export class StateCandidatesComponent {
     this.stateControl = new FormControl('AK'); 
   }
 
+ 
+  
 
   async ngOnInit() {
     this.removeKendoInvalidLicance();
