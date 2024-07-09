@@ -47,11 +47,19 @@ valueField="value" style="padding: 5px; width: 300px;"  (valueChange)="onElectio
                     }@else {
                         <i class="fa-solid fa-circle-info text-danger"></i>
                         <span>&nbsp;{{dataItem.verificationStatus}}</span>
-                        @if((2) == 2){
-                            <button class="ms-3 btn btn-warning" >Verify</button>
-                        }
                     }
                 </ng-template>
+            </kendo-grid-column>
+            <kendo-grid-column   title="Actions" [width]="15">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                 <!-- @if((userRole$ | async) == 2){ -->
+                  <button class="ms-2 btn btn-danger" (click)="openDeleteModal($event, deleteModal,dataItem)"><i class="fa-solid fa-trash"></i></button>
+                    <button class="ms-2 btn btn-secondary" (click)="openEditModal($event, addModal,dataItem)"><i class="fa-solid fa-pencil"></i></button>
+                    @if(dataItem.verificationStatus !=='Verified'){
+                        <button class="ms-2 btn btn-warning" (click)="openVerifyModal($event, verifyModal,dataItem)"><i class="fa-solid fa-check"></i></button>
+                      }
+                    <!-- } -->
+            </ng-template>
             </kendo-grid-column>
             <kendo-grid-pdf fileName="Candidates.pdf" [repeatHeaders]="true"></kendo-grid-pdf>
             <kendo-grid-excel fileName="Candidates.xlsx"></kendo-grid-excel>
@@ -156,5 +164,38 @@ valueField="value" style="padding: 5px; width: 300px;"  (valueChange)="onElectio
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark" (click)="addNewCandidate()">Save</button>
+    </div>
+</ng-template>
+
+
+<ng-template #verifyModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title2">Verify Candidate</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div>
+            You are sure! You want to verify candidate <b>{{candidateNamed}}</b> ?
+        </div>
+        <div class="error-text text-center text-danger pt-1">{{error}}</div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark">Verify</button>
+    </div>
+</ng-template>
+
+<ng-template #deleteModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title2">Delete Candidate</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div>
+            You are sure! You want to delete candidate <b>{{candidateNamed}}</b> ?
+        </div>
+        <div class="error-text text-center text-danger pt-1">{{error}}</div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" >Delete</button>
     </div>
 </ng-template>

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserService } from '../user/user.service';
-import { Observable } from 'rxjs/dist/types/internal/Observable';
 
 @Injectable({
   providedIn: 'root'
@@ -19,12 +18,12 @@ export class PartyServiceService {
     return this.http.get<any[]>("https://localhost:7013/ElectionParty/GetAllVerifiedParties");
   }
 
-  verifyParty(partyid: number, actionby: number): Observable<any> {
-    return this.http.get(`https://localhost:7013/ElectionParty/VefifyParty?partyid=${partyid}&verifiedby=${actionby}`);
+  verifyParty(partyid: number): Observable<any> {
+    return this.http.get(`https://localhost:7013/ElectionParty/VefifyParty?partyid=${partyid}&verifiedby=${this.userService.getUserId()}`);
   }
 
-  deleteParty(partyid: number, actionby: number): Observable<any> {
-    return this.http.get(`https://localhost:7013/ElectionParty/VefifyParty?partyid=${partyid}&verifiedby=${actionby}`);
+  deleteParty(partyid: number): Observable<any> {
+    return this.http.get(`https://localhost:7013/ElectionParty/DeleteParty?partyid=${partyid}&deletedby=${this.userService.getUserId()}`);
   }
 
   addNewParty(party: any): Observable<any> {
@@ -32,7 +31,9 @@ export class PartyServiceService {
     return this.http.post(`https://localhost:7013/ElectionParty/AddNewParty`, party);
   }
 
-  editParty(party : any) : Observable<any>{
-    
+  updateParty(party : any) : Observable<any>{
+    console.log("aaaaaaaaaaaaaaaaaaaaa");
+    party.append("createdBy",this.userService.getUserId());
+    return this.http.post(`https://localhost:7013/ElectionParty/UpdateParty`, party);
   }
 }

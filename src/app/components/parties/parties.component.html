@@ -17,7 +17,7 @@
             (valueChange)="onFilter($event)"
             ></kendo-textbox>
     </ng-template>
-    <kendo-grid-column field="electionPartyLogoUrl" title="Party Logo" [width]="10">
+    <kendo-grid-column field="imageSrc" title="Party Logo" [width]="10">
         <ng-template kendoGridCellTemplate let-dataItem>
             <img [src]="'data:image/jpeg;base64,'+dataItem.electionPartyLogoUrl" alt="Party Logo" style="max-width: 50px; max-height: 50px;">
         </ng-template>
@@ -35,17 +35,19 @@
             }
         </ng-template>
     </kendo-grid-column>
+    
     <kendo-grid-column   title="Actions" [width]="15">
         <ng-template kendoGridCellTemplate let-dataItem>
          <!-- @if((userRole$ | async) == 2){ -->
-            <button class="ms-3 btn btn-warning" (click)="openVerifyModal($event, verifyModal,dataItem.electionPartyId,dataItem.electionPartyName)"><i class="fa-solid fa-check"></i></button>
-            <button class="ms-1 btn btn-danger" (click)="openVerifyModal($event, verifyModal,dataItem.electionPartyId,dataItem.electionPartyName)"><i class="fa-solid fa-trash"></i></button>
-            <button class="ms-1 btn btn-secondary" (click)="openVerifyModal($event, verifyModal,dataItem.electionPartyId,dataItem.electionPartyName)"><i class="fa-solid fa-pencil"></i></button>
-        <!-- } -->
+          <button class="ms-2 btn btn-danger" (click)="openDeleteModal($event, deleteModal,dataItem.electionPartyId,dataItem.electionPartyName)"><i class="fa-solid fa-trash"></i></button>
+            <button class="ms-2 btn btn-secondary" (click)="openEditModal($event, updateModel,dataItem)"><i class="fa-solid fa-pencil"></i></button>
+            @if(dataItem.verificationStatus !=='Verified'){
+                <button class="ms-2 btn btn-warning" (click)="openVerifyModal($event, verifyModal,dataItem.electionPartyId,dataItem.electionPartyName)"><i class="fa-solid fa-check"></i></button>
+              }
+            <!-- } -->
     </ng-template>
     </kendo-grid-column>
-    <kendo-grid-pdf fileName="Parties.pdf" [repeatHeaders]="true"></kendo-grid-pdf>
-    <kendo-grid-excel fileName="Parties.xlsx"></kendo-grid-excel>
+    
 </kendo-grid>
 
 
@@ -97,7 +99,7 @@
         </form>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="addNewParty()">Save</button>
+        <button type="button" class="btn btn-outline-dark" (click)="addNewParty(addModal)">Save</button>
     </div>
 </ng-template>
 
@@ -130,6 +132,59 @@
         <div class="error-text text-center text-danger pt-1">{{error}}</div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="verifyParty(verifyModal)">Delete</button>
+        <button type="button" class="btn btn-outline-dark" (click)="deleteParty(deleteModal)">Delete</button>
+    </div>
+</ng-template>
+
+
+<ng-template #updateModel let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Party Details</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form class="k-form k-form-md" [formGroup]="form">
+            <fieldset class="k-form-fieldset">
+                <div class="row">
+                    <div class="col d-flex justify-content-center align-items-center text-center image-box-col">
+                        @if(imageSrc){
+                            <div class="image-box" [class.empty]="!imageSrc">
+                                <img [src]="imageSrc" alt="Uploaded Image"/>
+                            </div>
+                        }
+                        @else {
+                            <div class="image-box d-grid align-items-center">No Image Uploaded</div>
+                        }
+                    </div>
+                    <div class="col-8">
+                        <kendo-formfield>
+                            <form class="k-form k-form-md" [formGroup]="form">
+                                <fieldset class="k-form-fieldset">
+                                    <kendo-formfield>
+                                        <kendo-label  text="Enter Party name"></kendo-label>
+                                        <kendo-textbox
+                                          style="padding:5px;"
+                                          formControlName="partyName"
+                                          [clearButton]="true"
+                                          #username
+                                          required
+                                        ></kendo-textbox>
+                                    </kendo-formfield>
+                                </fieldset>
+                            </form>
+                        </kendo-formfield>
+                            <label for="file-upload" class="custom-file-upload pt-3 pb-2">
+                              <i class="fa fa-cloud-upload"></i> Upload Image (200 x 200 px)
+                            </label>
+                            <br>
+                            <input id="file-upload" type="file" (change)="onFileChange($event)"/>
+                    </div>
+                    <div class="error-text text-center text-danger pt-1">{{error}}</div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="updateParty(updateModel)">Save</button>
     </div>
 </ng-template>

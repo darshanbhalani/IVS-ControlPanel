@@ -106,14 +106,35 @@ export class PartiesComponent implements OnDestroy {
 
   openAddModal(event: Event, content: any) {
     event.preventDefault();
+    this.form.reset();
+    this.imageSrc=null;
+    this.selectedFile=null;
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'lg' });
+  }
+
+  openEditModal(event: Event, content: any,data:any) {
+    event.preventDefault();
+    this.form.setValue({
+      partyName: data.electionPartyName
+    });
+    this.partyName=data.electionPartyName;
+    this.partyId=data.electionPartyId;
+    this.imageSrc= 'data:image/jpeg;base64,'+data.electionPartyLogoUrl;
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'lg' });
+  }
+
+  openDeleteModal(event: Event, content: any,id: any, name: any) {
+    event.preventDefault();
+    this.partyId = id;
+    this.partyName = name;
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'md' });
   }
 
   openVerifyModal(event: Event, content: any, id: any, name: any) {
     event.preventDefault();
     this.partyId = id;
     this.partyName = name;
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'lg' });
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'md' });
   }
 
   onFileChange(event: Event) {
@@ -129,7 +150,7 @@ export class PartiesComponent implements OnDestroy {
   }
 
   verifyParty(content: any) {
-    const verifySubscription = this.dataService.verifyParty(this.partyId, 1).subscribe(
+    const verifySubscription = this.dataService.verifyParty(this.partyId).subscribe(
       (response: any) => {
         if (response) {
           this.modalService.dismissAll(content);
@@ -148,7 +169,7 @@ export class PartiesComponent implements OnDestroy {
     this.subscriptions.push(verifySubscription);
   }
 
-  addNewParty() {
+  addNewParty(content: any) {
     if (this.form.valid) {
       if (this.selectedFile != null) {
         const fData = new FormData();
@@ -182,12 +203,56 @@ export class PartiesComponent implements OnDestroy {
     }
   }
 
-  updateParty(){
-
+  updateParty(content: any){
+    if (this.form.valid) {
+      const fData = new FormData();
+      fData.append('electionPartyName', this.form.get('partyName')?.value!);
+      fData.append('electionPartyId', this.partyId);
+      if (this.selectedFile != null) {
+        fData.append('image', this.selectedFile);
+      }
+        const addPartySubscription = this.dataService.updateParty(fData).subscribe(
+          (response: any) => {
+            if (response.success) {
+              this.modalService.dismissAll();
+              this.getData();
+              this.snackbarService.showToast(true, response.body.message);
+              this.error = "";
+              this.selectedFile = null;
+              this.imageSrc = null;
+              this.form.reset();
+            } else {
+              this.error = response.body.error;
+            }
+          },
+          (error: any) => {
+            this.error = "Something went wrong."
+          }
+        );
+        this.subscriptions.push(addPartySubscription);
+    } else {
+      this.error = 'Please enter party name.';
+    }
   }
 
-  deleteParty(){
-    
+  deleteParty(content: any){
+    const verifySubscription = this.dataService.deleteParty(this.partyId).subscribe(
+      (response: any) => {
+        if (response) {
+          this.modalService.dismissAll(content);
+          this.snackbarService.showToast(true, response.body.message);
+          this.getData();
+          this.partyId = null;
+          this.partyName = null;
+        } else {
+          this.error = response.body.error;
+        }
+      },
+      (error: any) => {
+        this.error = "Something went wrong."
+      }
+    );
+    this.subscriptions.push(verifySubscription);
   }
 
   removeKendoInvalidLicance() {

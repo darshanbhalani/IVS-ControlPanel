@@ -58,6 +58,8 @@ export class StateCandidatesComponent {
   public isCandidateIndependent = false;
   isDistrictSelected:any;
   currentElectionId:any;
+  candidateNamed:any;
+  candidateId:any;
 
   imageSrc: string | ArrayBuffer | null = null;
   genderList = [
@@ -91,7 +93,6 @@ export class StateCandidatesComponent {
   }
 
  
-  
 
   async ngOnInit() {
     this.removeKendoInvalidLicance();
@@ -195,6 +196,25 @@ export class StateCandidatesComponent {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'lg' });
   }
 
+  openEditModal(event: Event, content: any,data:any) {
+    event.preventDefault();
+    this.imageSrc= 'data:image/jpeg;base64,'+data.electionPartyLogoUrl;
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'lg' });
+  }
+
+  openDeleteModal(event: Event, content: any,data: any) {
+    event.preventDefault();
+    this.candidateId=data.id;
+    this.candidateNamed=data.name;
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'md' });
+  }
+
+  openVerifyModal(event: Event, content: any, data: any) {
+    event.preventDefault();
+    this.candidateId=data.id;
+    this.candidateNamed=data.name;
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'md' });
+  }
 
   async onDistrictChange(event:any){
     if(event.value!=0){
