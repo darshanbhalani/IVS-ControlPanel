@@ -144,20 +144,15 @@ export class StateAssemblyComponent {
   async ngOnInit() {
     this.removeKendoInvalidLicance();
     await this.getAllAssemblies(7);
-    console.log(this.stateList);
     this.renderChart('gujarat', this.dataSources['state']);
   }
 
-
-
- 
 
 
   getData() {
     this.generalService.getAllStates().subscribe(
       (response: any) => {
         this.stateList = response.body.data.map((state: any) => ({ name: state.stateName, value: state.stateId }));
-        console.log(this.stateList)
       },
       (error: any) => {
         console.error('Error fetching data:', error);
