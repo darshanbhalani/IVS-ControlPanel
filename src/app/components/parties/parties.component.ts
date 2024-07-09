@@ -88,7 +88,7 @@ export class PartiesComponent implements OnDestroy {
   }
 
   public onFilter(value: Event): void {
-    const inputValue = (value.target as HTMLInputElement).value;
+    const inputValue = value;
     this.gridView = process(this.gridData, {
       filter: {
         logic: "or",

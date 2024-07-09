@@ -5,7 +5,7 @@
 </button>
 <span>
     Select Election : 
-    <kendo-dropdownlist [data]="upcommingElectionsList" textField="name"
+    <kendo-dropdownlist #dropdown1 [data]="upcommingElectionsList" textField="name"
 valueField="value" style="padding: 5px; width: 300px;"  (valueChange)="onElectionChange($event)">
 </kendo-dropdownlist>
 </span>
