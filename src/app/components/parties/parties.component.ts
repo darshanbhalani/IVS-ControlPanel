@@ -182,6 +182,14 @@ export class PartiesComponent implements OnDestroy {
     }
   }
 
+  updateParty(){
+
+  }
+
+  deleteParty(){
+    
+  }
+
   removeKendoInvalidLicance() {
     setTimeout(() => {
       const banner = Array.from(document.querySelectorAll('div')).find((el) =>

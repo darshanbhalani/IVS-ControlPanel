@@ -5,7 +5,7 @@
 </button>}
 <kendo-grid  [kendoGridBinding]="gridView"
   [pageSize]="20" [pageable]="pageableSettings"
-    [sortable]="true" [groupable]="true" [reorderable]="true" [resizable]="true"
+    [sortable]="true" [groupable]="true" [reorderable]="true" [resizable]="false"
     [columnMenu]="{ filter: true }" >
     <ng-template kendoGridToolbarTemplate>
         <button kendoGridExcelCommand type="button" [svgIcon]="excelSVG" style="padding: 8px;">
@@ -22,9 +22,9 @@
             <img [src]="'data:image/jpeg;base64,'+dataItem.electionPartyLogoUrl" alt="Party Logo" style="max-width: 50px; max-height: 50px;">
         </ng-template>
     </kendo-grid-column>
-    <kendo-grid-column field="electionPartyName" title="Party Name" [width]="80">
+    <kendo-grid-column field="electionPartyName" title="Party Name" [width]="55">
     </kendo-grid-column>
-    <kendo-grid-column field="verificationStatus" title="Verification Status" [width]="15">
+    <kendo-grid-column field="verificationStatus" title="Verification Status" [width]="20">
         <ng-template kendoGridCellTemplate let-dataItem>
             @if(dataItem.verificationStatus ==='Verified'){
                 <i class="fa-solid fa-circle-check text-success"></i>
@@ -32,12 +32,20 @@
             }@else {
                 <i class="fa-solid fa-circle-info text-danger"></i>
                 <span>&nbsp;{{dataItem.verificationStatus}}</span>
-                @if((userRole$ | async) == 2){
-                    <button class="ms-3 btn btn-warning" (click)="openVerifyModal($event, verifyModal,dataItem.electionPartyId,dataItem.electionPartyName)">Verify</button>
-                }
             }
         </ng-template>
     </kendo-grid-column>
+    <kendo-grid-column   title="Actions" [width]="15">
+        <ng-template kendoGridCellTemplate let-dataItem>
+         <!-- @if((userRole$ | async) == 2){ -->
+            <button class="ms-3 btn btn-warning" (click)="openVerifyModal($event, verifyModal,dataItem.electionPartyId,dataItem.electionPartyName)"><i class="fa-solid fa-check"></i></button>
+            <button class="ms-1 btn btn-danger" (click)="openVerifyModal($event, verifyModal,dataItem.electionPartyId,dataItem.electionPartyName)"><i class="fa-solid fa-trash"></i></button>
+            <button class="ms-1 btn btn-secondary" (click)="openVerifyModal($event, verifyModal,dataItem.electionPartyId,dataItem.electionPartyName)"><i class="fa-solid fa-pencil"></i></button>
+        <!-- } -->
+    </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-pdf fileName="Parties.pdf" [repeatHeaders]="true"></kendo-grid-pdf>
+    <kendo-grid-excel fileName="Parties.xlsx"></kendo-grid-excel>
 </kendo-grid>
 
 
@@ -107,5 +115,21 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark" (click)="verifyParty(verifyModal)">Verify</button>
+    </div>
+</ng-template>
+
+<ng-template #deleteModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title2">Delete Party</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div>
+            You are sure! You want to delete <b>{{partyName}}</b> party ?
+        </div>
+        <div class="error-text text-center text-danger pt-1">{{error}}</div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="verifyParty(verifyModal)">Delete</button>
     </div>
 </ng-template>

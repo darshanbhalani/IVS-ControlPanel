@@ -5,7 +5,7 @@
 </button>
 <span>
     Select Election : 
-    <kendo-dropdownlist #dropdown1 [data]="upcommingElectionsList" textField="name"
+    <kendo-dropdownlist #dropdown [data]="upcommingElectionsList" textField="name"
 valueField="value" style="padding: 5px; width: 300px;"  (valueChange)="onElectionChange($event)">
 </kendo-dropdownlist>
 </span>
@@ -21,7 +21,9 @@ valueField="value" style="padding: 5px; width: 300px;"  (valueChange)="onElectio
                     Export to Excel
                 </button>
                 <button kendoGridPDFCommand [svgIcon]="pdfSVG" style="padding: 8px;">Export to PDF</button>
-                <kendo-textbox class="ms-auto" style="width: 50%; padding: 5px;" placeholder="Search in all columns...">
+                <kendo-textbox class="ms-auto" style="width: 50%; padding: 5px;" placeholder="Search in all columns..."
+                (valueChange)="onFilter($event)"
+                >
                 </kendo-textbox>
             </ng-template>
             <kendo-grid-column field="electionPartyLogoUrl" title="Party Logo" [width]="10">
@@ -51,7 +53,8 @@ valueField="value" style="padding: 5px; width: 300px;"  (valueChange)="onElectio
                     }
                 </ng-template>
             </kendo-grid-column>
-           
+            <kendo-grid-pdf fileName="Candidates.pdf" [repeatHeaders]="true"></kendo-grid-pdf>
+            <kendo-grid-excel fileName="Candidates.xlsx"></kendo-grid-excel>
         </kendo-grid>
     </div>
 </div>

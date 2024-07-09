@@ -1,21 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
-import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
-import { ExcelModule, GridModule, PDFModule } from '@progress/kendo-angular-grid';
+import { DropDownsModule, DropDownListComponent } from '@progress/kendo-angular-dropdowns';
+import { ExcelModule, GridModule, PDFModule, DataBindingDirective } from '@progress/kendo-angular-grid';
 import { SVGIconModule } from '@progress/kendo-angular-icons';
 import { InputsModule, SwitchModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { SVGIcon, plusIcon,fileExcelIcon, filePdfIcon } from '@progress/kendo-svg-icons';
-import { log, Console } from 'console';
 import { StateCandidateService } from '../../services/candidate/state-candidate.service';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { Subscription } from 'rxjs';
 import { StateElectionService } from '../../services/stateElection/state-election.service';
 import { GeneralService } from '../../services/general/general.service';
 import { PartyServiceService } from '../../services/party/party-service.service';
-import { createDecipher } from 'crypto';
+import { process } from '@progress/kendo-data-query';
 
 interface DropDownModel{
   name:string,
@@ -43,13 +42,15 @@ interface DropDownModel{
   styleUrl: './state-candidates.component.scss'
 })
 export class StateCandidatesComponent {
+  @ViewChild(DataBindingDirective) dataBinding!: DataBindingDirective;
+  @ViewChild('dropdown') dropdown!: DropDownListComponent; 
+
   gridData=[];
   gridView:any[]=[];
   stateList:any;
-  stateControl: FormControl;
   error="";
   selectedFile:any;
-  upcommingElectionsList:any;
+  upcommingElectionsList:any=[];
   districtList:any;
   assemblyList:any;
   partyList:any;
@@ -87,7 +88,6 @@ export class StateCandidatesComponent {
 
 
   constructor( private modalService: NgbModal,private candidateService:StateCandidateService,private snackbarService:SnackbarService,private stateElectionService:StateElectionService,private generalServices:GeneralService,private partyService:PartyServiceService){
-    this.stateControl = new FormControl('AK'); 
   }
 
  
@@ -99,6 +99,7 @@ export class StateCandidatesComponent {
     this.isDistrictSelected=false;
     await this.getAllParties();
   }
+
   
   async getAllDistricts(stateId:any){
     const dataSubscription = this.generalServices.getAllDistricts(stateId).subscribe(
@@ -141,8 +142,13 @@ export class StateCandidatesComponent {
           value: item.stateElectionId,
           stateId:item.stateId
         }));
+        if (this.dropdown) {
+          console.log(this.upcommingElectionsList);
+          this.dropdown.defaultItem = this.upcommingElectionsList[0];
+        }
         await this.getAllCandidates(this.upcommingElectionsList[0].value);
         await this.getAllDistricts(this.upcommingElectionsList[0].stateId);
+        this.upcommingElectionsList = this.upcommingElectionsList.slice(1);
       },
       (error: any) => {
         this.snackbarService.showToast(false, "Error fetching data.");
@@ -269,6 +275,37 @@ getVoterDetails(voterId:any){
     } else {
       this.error = 'Please fill all the fields.';
     }
+  }
+
+  public onFilter(value: Event): void {
+    const inputValue = value;
+    this.gridView = process(this.gridData, {
+      filter: {
+        logic: "or",
+        filters: [
+          {
+            field: "name",
+            operator: "contains",
+            value: inputValue,
+          },
+          {
+            field: "gender",
+            operator: "contains",
+            value: inputValue,
+          },
+          {
+            field: "partyName",
+            operator: "contains",
+            value: inputValue,
+          }, {
+            field: "assemblyName",
+            operator: "contains",
+            value: inputValue,
+          }
+        ],
+      },
+    }).data;
+    this.dataBinding.skip = 0;
   }
 
   removeKendoInvalidLicance() {

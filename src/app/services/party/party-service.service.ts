@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserService } from '../user/user.service';
+import { Observable } from 'rxjs/dist/types/internal/Observable';
 
 @Injectable({
   providedIn: 'root'
@@ -29,5 +30,9 @@ export class PartyServiceService {
   addNewParty(party: any): Observable<any> {
     party.append("createdBy",this.userService.getUserId());
     return this.http.post(`https://localhost:7013/ElectionParty/AddNewParty`, party);
+  }
+
+  editParty(party : any) : Observable<any>{
+    
   }
 }

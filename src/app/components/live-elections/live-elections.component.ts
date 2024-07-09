@@ -1,19 +1,56 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Chart } from 'chart.js/auto';
-import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
-import { SwitchModule } from '@progress/kendo-angular-inputs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DropDownsModule, DropDownListComponent } from '@progress/kendo-angular-dropdowns';
+import { SwitchModule, InputsModule } from '@progress/kendo-angular-inputs';
 import { FormsModule } from '@angular/forms';
+import { GridModule, ExcelModule, PDFModule } from '@progress/kendo-angular-grid';
+import { SVGIconModule, SVGIcon } from '@progress/kendo-angular-icons';
+import { ButtonModule } from '@progress/kendo-angular-buttons';
+import { fileExcelIcon, filePdfIcon } from '@progress/kendo-svg-icons';
 
 @Component({
   selector: 'app-live-elections',
   standalone:true,
-  imports:[DropDownsModule,SwitchModule,FormsModule],
+  imports:[
+    DropDownsModule,
+    SwitchModule,
+    FormsModule,
+    GridModule,
+    InputsModule,
+    SVGIconModule,
+    ExcelModule,
+    PDFModule,
+    ButtonModule
+  ],
   templateUrl: './live-elections.component.html',
   styleUrls: ['./live-elections.component.scss']
 })
 export class LiveElectionsComponent implements OnInit {
+  @ViewChild('dropdown') dropdown!: DropDownListComponent;
+
+  gridData:any = [];
+  gridView: any[] = [];
+  public pdfSVG: SVGIcon = filePdfIcon;
+  public excelSVG: SVGIcon = fileExcelIcon;
+  scrollable: 'none' | 'scrollable' | 'virtual' = 'scrollable';
+  public pageableSettings: any = {
+    buttonCount: 5,
+    info: true,
+    type: 'numeric',
+    pageSizes: [10, 20, 40, 50, 100, 'All'],
+    previousNext: true
+  };
+
   public checked = true;
+  timerList:any=[
+    {name:"1 Min",value:60},
+    {name:"2 Min",value:120},
+    {name:"3 Min",value:180},
+    {name:"4 Min",value:240},
+    {name:"5 Min",value:300},
+    {name:"10 Min",value:600}
+  ];
+
   stateList:any;
   data = [
     { "time": "9:00am", "male": 500, "female": 150, "other": 10, "total": 260 },
@@ -164,4 +201,19 @@ export class LiveElectionsComponent implements OnInit {
       options: chartOptions
     });
   }
+
+
+  ngAfterViewInit(){
+    if (this.dropdown) {
+      console.log("hello.............................................");
+      console.log(this.dropdown.defaultItem);
+       this.dropdown.defaultItem = {name:"30 Sec",value:30};
+       console.log(this.dropdown.defaultItem);
+    }
+  }
+
+  onTimerChange(event:any){
+    
+  }
+  
 }

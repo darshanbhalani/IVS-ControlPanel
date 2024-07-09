@@ -78,9 +78,10 @@ interface DataSource {
 })
 export class StateAssemblyComponent {
   @ViewChild(DataBindingDirective) dataBinding!: DataBindingDirective;
+  @ViewChild('dropdown') dropdown!: DropDownListComponent;
+  stateList: any = [];
   gridData: Assembly[] = [];
   gridView: Assembly[] = [];
-  stateList: any = [];
   public pdfSVG: SVGIcon = filePdfIcon;
   public excelSVG: SVGIcon = fileExcelIcon;
   scrollable: 'none' | 'scrollable' | 'virtual' = 'scrollable';
@@ -93,7 +94,7 @@ export class StateAssemblyComponent {
     previousNext: true
   };
 
-  @ViewChild('dropdown') dropdown!: DropDownListComponent;
+ 
 
   constructor(private generalService: GeneralService) {
     this.getData();
@@ -182,6 +183,7 @@ export class StateAssemblyComponent {
 
 
   async updateMap(event: any) {
+    
     await this.getAllAssemblies(event.value);
     if (event.value) {
       this.renderChart(event.name.toString().toLowerCase().trim().replace(/\s+/g, ""), this.dataSources['state']);

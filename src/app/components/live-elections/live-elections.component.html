@@ -16,15 +16,17 @@
     </div>
     <div class="ms-auto col-2 text-right d-flex justify-content-end align-items-center">
         <div class="text-right">
+            Auto Sync :
             <kendo-switch [(ngModel)]="checked"></kendo-switch>
-            Auto Sync
         </div>
     </div>
+    @if(checked){
     <div class="col-1">
-        <kendo-dropdownlist class="input-field" [data]="stateList" textField="name" valueField="value"
-            style="padding: 5px;">
+        <kendo-dropdownlist #dropdown class="input-field bg-transparent" [data]="timerList" textField="name" valueField="value" [disabled]="!checked"
+            style="padding: 5px;" (valueChange)="onTimerChange($event)">
         </kendo-dropdownlist>
     </div>
+}
 </div>
 <div class="row mt-5">
     <div class="col" style="height: 400px !important;">
@@ -36,22 +38,22 @@
         <div class="col-6 mb-4">
             <div class="box bg-total">
                 <div class="row">
-                    <div class="col-12 text-center mb-4">All Over Voters</div>
+                    <div class="col-12 text-center mb-4 title">All Over Voters</div>
                     <div class="col-4">
                         <div class="d-flex justify-content-center align-items-center flex-column">
-                            <h2>23545206</h2>
+                            <h3>23545206</h3>
                             <p>Total</p>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="d-flex justify-content-center align-items-center flex-column">
-                            <h2>15789222</h2>
+                            <h3>15789222</h3>
                             <p>Turnout</p>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="d-flex justify-content-center align-items-center flex-column">
-                            <h2>55%</h2>
+                            <h3>55%</h3>
                             <p>Percentage</p>
                         </div>
                     </div>
@@ -61,22 +63,22 @@
         <div class="col-6 mb-4">
             <div class="box bg-male">
                 <div class="row">
-                    <div class="col-12 text-center mb-4">Male Voters</div>
+                    <div class="col-12 text-center mb-4 title">Male Voters</div>
                     <div class="col-4">
                         <div class="d-flex justify-content-center align-items-center flex-column">
-                            <h2>23545206</h2>
+                            <h3>23545206</h3>
                             <p>Total</p>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="d-flex justify-content-center align-items-center flex-column">
-                            <h2>15789222</h2>
+                            <h3>15789222</h3>
                             <p>Turnout</p>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="d-flex justify-content-center align-items-center flex-column">
-                            <h2>55%</h2>
+                            <h3>55%</h3>
                             <p>Percentage</p>
                         </div>
                     </div>
@@ -86,22 +88,22 @@
         <div class="col-6 mb-4">
             <div class="box bg-female">
                 <div class="row">
-                    <div class="col-12 text-center mb-4">Female Voters</div>
+                    <div class="col-12 text-center mb-4 title">Female Voters</div>
                     <div class="col-4">
                         <div class="d-flex justify-content-center align-items-center flex-column">
-                            <h2>23545206</h2>
+                            <h3>23545206</h3>
                             <p>Total</p>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="d-flex justify-content-center align-items-center flex-column">
-                            <h2>15789222</h2>
+                            <h3>15789222</h3>
                             <p>Turnout</p>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="d-flex justify-content-center align-items-center flex-column">
-                            <h2>55%</h2>
+                            <h3>55%</h3>
                             <p>Percentage</p>
                         </div>
                     </div>
@@ -111,27 +113,59 @@
         <div class="col-6 mb-4">
             <div class="box bg-other">
                 <div class="row">
-                    <div class="col-12 text-center mb-4">Other Voters</div>
+                    <div class="col-12 text-center mb-4 title">Other Voters</div>
                     <div class="col-4">
                         <div class="d-flex justify-content-center align-items-center flex-column">
-                            <h2>23545206</h2>
+                            <h3>23545206</h3>
                             <p>Total</p>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="d-flex justify-content-center align-items-center flex-column">
-                            <h2>15789222</h2>
+                            <h3>15789222</h3>
                             <p>Turnout</p>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="d-flex justify-content-center align-items-center flex-column">
-                            <h2>55%</h2>
+                            <h3>55%</h3>
                             <p>Percentage</p>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <h3>Assembly wise votes</h3>
+        <div class="kendo-grid-data">
+            <kendo-grid [kendoGridBinding]="gridView" kendoGridSelectBy="id" [pageSize]="20"
+                [pageable]="pageableSettings" [sortable]="true" [groupable]="true" [reorderable]="true"
+                [resizable]="true" [columnMenu]="{ filter: true }" [height]="580">
+                <ng-template kendoGridToolbarTemplate>
+                    <button kendoGridExcelCommand type="button" [svgIcon]="excelSVG" style="padding: 8px;">
+                        Export to Excel
+                    </button>
+                    <button kendoGridPDFCommand [svgIcon]="pdfSVG" style="padding: 8px;">Export to PDF</button>
+                    <kendo-textbox class="ms-auto" style="width: 50%; padding: 5px;"
+                        placeholder="Search in all columns..." ></kendo-textbox>
+                </ng-template>
+                <kendo-grid-column field="asseblyName" title="Assemby Name" [width]=20>
+                </kendo-grid-column>
+                <kendo-grid-column field="asseblyDistrict" title="District" [width]=20>
+                </kendo-grid-column>
+                <kendo-grid-column field="totalVoters" title="Male" [width]=12>
+                </kendo-grid-column>
+                <kendo-grid-column field="totalVoters" title="Female" [width]=12>
+                </kendo-grid-column>
+                <kendo-grid-column field="totalVoters" title="Other" [width]=12>
+                </kendo-grid-column>
+                <kendo-grid-column field="totalVoters" title="Total" [width]=12>
+                </kendo-grid-column>
+                <kendo-grid-column field="totalVoters" title="Turnout (%)" [width]=12>
+                </kendo-grid-column>
+            </kendo-grid>
         </div>
     </div>
 </div>
