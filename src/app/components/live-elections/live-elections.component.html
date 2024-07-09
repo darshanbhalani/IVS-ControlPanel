@@ -15,10 +15,10 @@
         </kendo-dropdownlist>
     </div>
     <div class="ms-auto col-2 text-right d-flex justify-content-end align-items-center">
-       <div class="text-right">
-            <kendo-switch [(ngModel)]="checked" ></kendo-switch>
+        <div class="text-right">
+            <kendo-switch [(ngModel)]="checked"></kendo-switch>
             Auto Sync
-       </div>
+        </div>
     </div>
     <div class="col-1">
         <kendo-dropdownlist class="input-field" [data]="stateList" textField="name" valueField="value"
@@ -26,8 +26,112 @@
         </kendo-dropdownlist>
     </div>
 </div>
-<div class="row">
+<div class="row mt-5">
     <div class="col" style="height: 400px !important;">
         <canvas id="myChart" style="height: 400px !important;"></canvas>
+    </div>
+</div>
+<div class="container-fluid mt-5">
+    <div class="row">
+        <div class="col-6 mb-4">
+            <div class="box bg-total">
+                <div class="row">
+                    <div class="col-12 text-center mb-4">All Over Voters</div>
+                    <div class="col-4">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                            <h2>23545206</h2>
+                            <p>Total</p>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                            <h2>15789222</h2>
+                            <p>Turnout</p>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                            <h2>55%</h2>
+                            <p>Percentage</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 mb-4">
+            <div class="box bg-male">
+                <div class="row">
+                    <div class="col-12 text-center mb-4">Male Voters</div>
+                    <div class="col-4">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                            <h2>23545206</h2>
+                            <p>Total</p>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                            <h2>15789222</h2>
+                            <p>Turnout</p>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                            <h2>55%</h2>
+                            <p>Percentage</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 mb-4">
+            <div class="box bg-female">
+                <div class="row">
+                    <div class="col-12 text-center mb-4">Female Voters</div>
+                    <div class="col-4">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                            <h2>23545206</h2>
+                            <p>Total</p>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                            <h2>15789222</h2>
+                            <p>Turnout</p>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                            <h2>55%</h2>
+                            <p>Percentage</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 mb-4">
+            <div class="box bg-other">
+                <div class="row">
+                    <div class="col-12 text-center mb-4">Other Voters</div>
+                    <div class="col-4">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                            <h2>23545206</h2>
+                            <p>Total</p>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                            <h2>15789222</h2>
+                            <p>Turnout</p>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="d-flex justify-content-center align-items-center flex-column">
+                            <h2>55%</h2>
+                            <p>Percentage</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

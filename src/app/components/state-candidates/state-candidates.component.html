@@ -5,7 +5,7 @@
 </button>
 <span>
     Select Election : 
-    <kendo-dropdownlist [data]="upcommingElectionsList" textField="name"
+    <kendo-dropdownlist #dropdown1 [data]="upcommingElectionsList" textField="name"
 valueField="value" style="padding: 5px; width: 300px;"  (valueChange)="onElectionChange($event)">
 </kendo-dropdownlist>
 </span>
@@ -51,8 +51,7 @@ valueField="value" style="padding: 5px; width: 300px;"  (valueChange)="onElectio
                     }
                 </ng-template>
             </kendo-grid-column>
-            <kendo-grid-pdf fileName="Candidates.pdf" [repeatHeaders]="true"></kendo-grid-pdf>
-            <kendo-grid-excel fileName="Candidates.xlsx"></kendo-grid-excel>
+           
         </kendo-grid>
     </div>
 </div>
