@@ -58,7 +58,7 @@ export class StateCandidatesComponent {
   public isCandidateIndependent = false;
   isDistrictSelected:any;
   currentElectionId:any;
-  candidateNamed:any;
+  candidateName:any;
   candidateId:any;
 
   imageSrc: string | ArrayBuffer | null = null;
@@ -205,14 +205,14 @@ export class StateCandidatesComponent {
   openDeleteModal(event: Event, content: any,data: any) {
     event.preventDefault();
     this.candidateId=data.id;
-    this.candidateNamed=data.name;
+    this.candidateName=data.name;
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'md' });
   }
 
   openVerifyModal(event: Event, content: any, data: any) {
     event.preventDefault();
     this.candidateId=data.id;
-    this.candidateNamed=data.name;
+    this.candidateName=data.name;
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'md' });
   }
 
@@ -295,6 +295,53 @@ getVoterDetails(voterId:any){
     } else {
       this.error = 'Please fill all the fields.';
     }
+  }
+
+
+  updateCandidate(){
+
+  }
+
+
+  verifyCandidate(content:any){
+    const verifySubscription = this.candidateService.verifyCandidate(this.candidateId).subscribe(
+      (response: any) => {
+        if (response) {
+          this.modalService.dismissAll(content);
+          this.getAllCandidates(this.currentElectionId);
+          this.candidateId=null;
+          this.candidateName=null;
+          this.snackbarService.showToast(true, response.body.message);
+        } else {
+          this.error = response.body.error;
+        }
+      },
+      (error: any) => {
+        this.error = "Something went wrong."
+      }
+    );
+    this.subscriptions.push(verifySubscription);
+  }
+
+
+  deleteCandidate(content:any){
+    const verifySubscription = this.candidateService.deleteCandidate(this.candidateId).subscribe(
+      (response: any) => {
+        if (response) {
+          this.modalService.dismissAll(content);
+          this.getAllCandidates(this.currentElectionId);
+          this.candidateId=null;
+          this.candidateName=null;
+          this.snackbarService.showToast(true, response.body.message);
+        } else {
+          this.error = response.body.error;
+        }
+      },
+      (error: any) => {
+        this.error = "Something went wrong."
+      }
+    );
+    this.subscriptions.push(verifySubscription);
   }
 
   public onFilter(value: Event): void {

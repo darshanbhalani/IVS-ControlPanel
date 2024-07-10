@@ -32,7 +32,6 @@ export class PartyServiceService {
   }
 
   updateParty(party : any) : Observable<any>{
-    console.log("aaaaaaaaaaaaaaaaaaaaa");
     party.append("createdBy",this.userService.getUserId());
     return this.http.post(`https://localhost:7013/ElectionParty/UpdateParty`, party);
   }

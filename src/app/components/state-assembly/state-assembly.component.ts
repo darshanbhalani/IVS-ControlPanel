@@ -145,6 +145,7 @@ export class StateAssemblyComponent {
   async ngOnInit() {
     this.removeKendoInvalidLicance();
     await this.getAllAssemblies(7);
+    this.dataSources['state'].chart.caption ="Districts of Gujarat"
     this.renderChart('gujarat', this.dataSources['state']);
   }
 
@@ -183,9 +184,9 @@ export class StateAssemblyComponent {
 
 
   async updateMap(event: any) {
-    
     await this.getAllAssemblies(event.value);
     if (event.value) {
+      this.dataSources['state'].chart.caption  = "Districts of " + event.name;
       this.renderChart(event.name.toString().toLowerCase().trim().replace(/\s+/g, ""), this.dataSources['state']);
     } else {
       console.error('Selected item not found in the list.');

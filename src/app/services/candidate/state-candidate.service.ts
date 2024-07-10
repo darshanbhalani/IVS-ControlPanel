@@ -12,7 +12,6 @@ export class StateCandidateService {
 
   
   addNewCandidate(candidate: any): Observable<any> {
-    console.log("Add Candidate...");
     return this.http.post(`https://localhost:7013/Candidate/AddCandidate`, candidate);
   }
 
@@ -24,4 +23,15 @@ export class StateCandidateService {
     return this.http.get(`https://localhost:7013/Candidate/GetAllCandidatesOfAssembly?electionid=${electionId}&assemblyId=${AssemblyId}` );
   }
 
+  updateCandidateDetails(){
+
+  }
+
+  deleteCandidate(candidateId :any): Observable<any>{
+    return this.http.get(`https://localhost:7013/Candidate/DeleteCandidate?candidateId=${candidateId}&deletedBy=${this.userService.getUserId()}`);
+  }
+
+  verifyCandidate(candidateId :any): Observable<any>{
+    return this.http.get(`https://localhost:7013/Candidate/VerifyCandidate?candidateId=${candidateId}&verifiedBy=${this.userService.getUserId()}`);
+}
 }
