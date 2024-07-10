@@ -1,10 +1,10 @@
-<button kendoButton class="k-btn mb-3" [svgIcon]="plusIcon" (click)="openModal($event, modalContent)"
+<button kendoButton class="k-btn mb-3" [svgIcon]="plusIcon" (click)="openModal($event, addModel)"
     style="padding: 8px; font-weight: bolder; padding-left: 15px; padding-right: 15px;">
     Shedule Election
 </button>
 <div class="col-12 kendo-grid-data d-flex justify-content-center flex-column">
     <div class="kendo-grid-data">
-        <kendo-grid [kendoGridBinding]="gridData" kendoGridSelectBy="id" [pageSize]="20" [pageable]="pageableSettings"
+        <kendo-grid [kendoGridBinding]="gridData" kendoGridSelectBy="stateElectionId" [pageSize]="20" [pageable]="pageableSettings"
             [sortable]="true" [groupable]="true" [reorderable]="true" [resizable]="true"
             [columnMenu]="{ filter: true }">
             <ng-template kendoGridToolbarTemplate>
@@ -15,15 +15,26 @@
                 <kendo-textbox class="ms-auto" style="width: 50%; padding: 5px;"
                     placeholder="Search in all columns..."></kendo-textbox>
             </ng-template>
-            <kendo-grid-column field="ProductID" title="State" [width]=30>
+            <kendo-grid-column field="stateName" title="State Name" [width]=30>
             </kendo-grid-column>
-            <kendo-grid-column field="ProductName" title="Year" [width]=20>
+            <kendo-grid-column field="electionDate" title="Year" [width]=20>
             </kendo-grid-column>
-            <kendo-grid-column field="Category.CategoryName" title="Total Assembly" [width]=20>
+            <kendo-grid-column field="totalAssembly" title="Total Assembly" [width]=20>
             </kendo-grid-column>
-            <kendo-grid-column field="Category.CategoryNameknio" title="Status" [width]=20>
+            <kendo-grid-column field="electionStageName" title="Status" [width]=20>
             </kendo-grid-column>
             <kendo-grid-column field="jkb" title="Approval" [width]=10>
+            </kendo-grid-column>
+            <kendo-grid-column   title="Actions" [width]="15">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                 <!-- @if((userRole$ | async) == 2){ -->
+                  <button class="ms-2 btn btn-danger"><i class="fa-solid fa-trash"></i></button>
+                    <button class="ms-2 btn btn-secondary" ><i class="fa-solid fa-pencil"></i></button>
+                    @if(dataItem.verificationStatus !=='Verified'){
+                        <button class="ms-2 btn btn-warning"><i class="fa-solid fa-check"></i></button>
+                      }
+                    <!-- } -->
+            </ng-template>
             </kendo-grid-column>
         </kendo-grid>
     </div>
@@ -31,7 +42,7 @@
 
 
 
-<ng-template #modalContent let-modal>
+<ng-template #addModel let-modal>
     <div class="modal-header">
         <h4 class="modal-title" id="modal-basic-title">State Election Details</h4>
         <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
@@ -45,8 +56,8 @@
                     </div>
                     <div class="col-10">
                         <kendo-formfield>
-                            <kendo-dropdownlist class="input-field" defaultItem="Select State" [data]="stateList"
-                                [valuePrimitive]="true">
+                            <kendo-dropdownlist class="input-field" [defaultItem]="{name:'Select State',value:null}" [data]="stateList" textField="name" valueField="value"
+                                [valuePrimitive]="true" formControlName="stateId">
                             </kendo-dropdownlist>
                         </kendo-formfield>
                     </div>
@@ -57,15 +68,15 @@
                     </div>
                     <div class="col-10">
                         <kendo-formfield>
-                            <kendo-datepicker class="input-field" placeholder="Choose Election Date"></kendo-datepicker>
+                            <kendo-datepicker class="input-field" placeholder="Choose Election Date" formControlName="electionDate"></kendo-datepicker>
                         </kendo-formfield>
                     </div>
                 </div>
-                
             </fieldset>
         </form>
+        <div class="error-text text-center text-danger pt-5">{{error}}</div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click');">Save</button>
+        <button type="button" class="btn btn-outline-dark" (click)="sheduleElection(addModel)">Shedule Election</button>
     </div>
 </ng-template>

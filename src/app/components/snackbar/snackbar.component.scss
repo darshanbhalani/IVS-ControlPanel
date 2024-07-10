@@ -1,4 +1,4 @@
-::ng-deep .mat-snack-bar-container {
+.mat-snack-bar-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -6,14 +6,15 @@
   max-width: 30vw !important;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
   margin-bottom: 10px;
+  background-color: transparent !important;
 }
 
-::ng-deep .success-snackbar {
-  background-color: #4caf50 !important; /* Green background for success */
-  color: #fff !important; /* Ensure white text color */
+.success-snackbar,.mat-mdc-snack-bar-label ,.mdc-snackbar__label {
+  background-color: #4caf50 !important; 
+  color: #fff !important; 
 }
 
-::ng-deep .error-snackbar {
+.error-snackbar {
   background-color: #f44336 !important; /* Red background for error */
   color: #fff !important; /* Ensure white text color */
 }

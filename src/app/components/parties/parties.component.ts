@@ -16,6 +16,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user/user.service';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-parties',
@@ -67,7 +68,9 @@ export class PartiesComponent implements OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private dataService: PartyServiceService, private modalService: NgbModal, private userService: UserService, private snackbarService: SnackbarService) { }
+  constructor(private dataService: PartyServiceService, private modalService: NgbModal,
+     private userService: UserService, private snackbarService: SnackbarService,
+     private  toster :ToastrService) { }
 
   ngOnInit() {
     this.removeKendoInvalidLicance();
@@ -154,10 +157,11 @@ export class PartiesComponent implements OnDestroy {
       (response: any) => {
         if (response) {
           this.modalService.dismissAll(content);
-          this.snackbarService.showToast(true, response.body.message);
+          // this.snackbarService.showToast(true, response.body.message);
           this.getData();
           this.partyId = null;
           this.partyName = null;
+          this.toster.success(response.body.message,{iconClass: '',closeButton: true});
         } else {
           this.error = response.body.error;
         }
@@ -254,6 +258,7 @@ export class PartiesComponent implements OnDestroy {
     );
     this.subscriptions.push(verifySubscription);
   }
+
 
   removeKendoInvalidLicance() {
     setTimeout(() => {
