@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnDestroy } from '@angular/core';
+import { Component, ViewChild, OnDestroy, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
@@ -16,6 +16,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user/user.service';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
+import { NgToastService } from 'ng-angular-popup';
 
 @Component({
   selector: 'app-parties',
@@ -40,10 +41,14 @@ import { SnackbarService } from '../../services/snackbar/snackbar.service';
 export class PartiesComponent implements OnDestroy {
 
   @ViewChild(DataBindingDirective) dataBinding!: DataBindingDirective;
-  gridData = [];
-  gridView: any[] = [];
+
+  private toaster = inject(NgToastService);
+  data$:any = this.dataService.partiesList$
+  gridData:any = this.dataService.partiesList$;
+  gridView: any = [];
   partyId: any;
   partyName: any;
+  filter=0;
   error: string = "";
   userRole$ = this.userService.userRoleId$;
   selectedFile: any;
@@ -81,22 +86,22 @@ export class PartiesComponent implements OnDestroy {
         this.gridView = this.gridData;
       },
       (error: any) => {
-        this.snackbarService.showToast(false, "Error fetching data.");
+        this.toaster.success("Error while fetching data.", "", 3000);
       }
     );
     this.subscriptions.push(dataSubscription);
   }
 
   public onFilter(value: Event): void {
-    const inputValue = value;
-    this.gridView = process(this.gridData, {
+    this.filter = (""+value).length;
+    this.gridView= process(this.gridData, {
       filter: {
         logic: "or",
         filters: [
           {
             field: "electionPartyName",
             operator: "contains",
-            value: inputValue,
+            value: value,
           }
         ],
       },
@@ -154,8 +159,7 @@ export class PartiesComponent implements OnDestroy {
       (response: any) => {
         if (response) {
           this.modalService.dismissAll(content);
-          this.snackbarService.showToast(true, response.body.message);
-          this.getData();
+          this.toaster.success(response.body.message, "", 3000);
           this.partyId = null;
           this.partyName = null;
         } else {
@@ -180,8 +184,7 @@ export class PartiesComponent implements OnDestroy {
           (response: any) => {
             if (response.success) {
               this.modalService.dismissAll();
-              this.getData();
-              this.snackbarService.showToast(true, response.body.message);
+              this.toaster.success(response.body.message, "", 3000);
               this.error = "";
               this.selectedFile = null;
               this.imageSrc = null;
@@ -215,8 +218,7 @@ export class PartiesComponent implements OnDestroy {
           (response: any) => {
             if (response.success) {
               this.modalService.dismissAll();
-              this.getData();
-              this.snackbarService.showToast(true, response.body.message);
+              this.toaster.success(response.body.message, "", 3000);
               this.error = "";
               this.selectedFile = null;
               this.imageSrc = null;
@@ -240,8 +242,7 @@ export class PartiesComponent implements OnDestroy {
       (response: any) => {
         if (response) {
           this.modalService.dismissAll(content);
-          this.snackbarService.showToast(true, response.body.message);
-          this.getData();
+          this.toaster.success(response.body.message, "", 3000);
           this.partyId = null;
           this.partyName = null;
         } else {

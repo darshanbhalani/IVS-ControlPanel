@@ -1,9 +1,9 @@
 @if((userRole$ | async)==1){
-<button kendoButton class="k-btn mb-3" [svgIcon]="plusIcon" (click)="openAddModal($event, addModal)"
+<button kendoButton id="add-btn" class="k-btn mb-3" [svgIcon]="plusIcon" (click)="openAddModal($event, addModal)"
     style="padding: 8px; font-weight: bolder; padding-left: 15px; padding-right: 15px;">
     Add New Party
 </button>}
-<kendo-grid  [kendoGridBinding]="gridView"
+<kendo-grid  [kendoGridBinding]="filter > 0 ? gridView :(data$ | async)"
   [pageSize]="20" [pageable]="pageableSettings"
     [sortable]="true" [groupable]="true" [reorderable]="true" [resizable]="false"
     [columnMenu]="{ filter: true }" >
@@ -35,7 +35,8 @@
             }
         </ng-template>
     </kendo-grid-column>
-    
+    <kendo-grid-pdf fileName="Parties.pdf" [repeatHeaders]="true"></kendo-grid-pdf>
+    <kendo-grid-excel fileName="Parties.xlsx"></kendo-grid-excel>
     <kendo-grid-column   title="Actions" [width]="15">
         <ng-template kendoGridCellTemplate let-dataItem>
          <!-- @if((userRole$ | async) == 2){ -->

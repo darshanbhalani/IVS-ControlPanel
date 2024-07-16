@@ -1,5 +1,5 @@
 <div class="mb-3 d-flex justify-content-between">
-    <button kendoButton class="k-btn" [svgIcon]="plusIcon" (click)="openAddModal($event, addModal)"
+    <button kendoButton id="add-btn" class="k-btn" [svgIcon]="plusIcon" (click)="openAddModal($event, addModal)"
     style="padding: 8px; font-weight: bolder; padding-left: 15px; padding-right: 15px;">
     Add Candidate
 </button>
@@ -150,7 +150,7 @@ valueField="value" style="padding: 5px; width: 300px;"  (valueChange)="onElectio
                 }
                     @else{
                         <div class="col-6 mt-3 image-box-col">
-                        <div class="image-box">
+                        <div class="image-box text-center ">
                             <img [src]="imageSrc" alt="Uploaded Image" class="text-center"/>
                         </div>
                     </div>
