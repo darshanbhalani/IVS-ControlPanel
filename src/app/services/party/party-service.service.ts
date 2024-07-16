@@ -20,7 +20,7 @@ export class PartyServiceService {
 
   constructor(private http: HttpClient, private userService: UserService) {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7013/electionPartyHub') // Ensure this URL matches your SignalR hub endpoint
+      .withUrl('https://localhost:7013/electionPartyHub') 
       .build();
 
     this.hubConnection.start()
@@ -37,9 +37,7 @@ export class PartyServiceService {
           if(response.success){
             this.partiesList.next(response.body.data);
         }
-      })
-      
-    
+      });
   }
 
   getAllParties():any {
