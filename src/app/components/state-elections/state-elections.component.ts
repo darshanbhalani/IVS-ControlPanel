@@ -7,8 +7,13 @@ import { SVGIconModule } from '@progress/kendo-angular-icons';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { SVGIcon,plusIcon, filePdfIcon, fileExcelIcon } from "@progress/kendo-svg-icons";
-import { FormGroup, FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, RequiredValidator, Validators } from "@angular/forms";
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+import { GeneralService } from '../../services/general/general.service';
+import { StateElectionService } from '../../services/stateElection/state-election.service';
+import { SnackbarService } from '../../services/snackbar/snackbar.service';
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-state-elections',
   standalone: true,
@@ -29,7 +34,12 @@ import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
   styleUrl: './state-elections.component.scss'
 })
 export class StateElectionsComponent {
+
+  gridView=[];
   gridData=[];
+  stateList:any=[];
+  error:any=null;
+  private subscriptions: Subscription[] = [];
   public pageableSettings: any = {
     buttonCount: 5,
     info: true,
@@ -37,22 +47,21 @@ export class StateElectionsComponent {
     pageSizes: [10, 20, 40, 50, 100, 'All'],
     previousNext: true
   };
-
-  public stateList: Array<string> = ["Item 1", "Item 2", "Item 3"];
   public pdfSVG: SVGIcon = filePdfIcon;
   public excelSVG: SVGIcon = fileExcelIcon;
   public plusIcon: SVGIcon = plusIcon;
-
   public form: FormGroup = new FormGroup({
-    username: new FormControl(),
-    password: new FormControl(),
-    loggedin: new FormControl(),
+    electionDate: new FormControl(null,[Validators.required]),
+    stateId: new FormControl(null,[Validators.required])
   });
 
-constructor(private modalService: NgbModal){}
+
+constructor(private modalService: NgbModal,private generalService:GeneralService,private stateElectionService:StateElectionService,private snackbarService:SnackbarService){}
  
   ngOnInit(){
   this.removeKendoInvalidLicance() 
+  this.getStatesList();
+  this.getData();
   }
 
   openModal(event: Event, content: any) {
@@ -60,24 +69,70 @@ constructor(private modalService: NgbModal){}
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'lg' });
   }
 
+  getStatesList(){
+    const subscription = this.generalService.getAllStates().subscribe(
+      (response: any) => {
+        this.stateList = response.body.data.map((state: any) => ({ name: state.stateName, value: state.stateId }));
+      },
+      (error: any) => {
+        console.error('Error fetching data:', error);
+      }
+    );
+    this.subscriptions.push(subscription);
+  }
 
+  getData(){
+    const subscription = this.stateElectionService.getAllElections().subscribe(
+      (response: any) => {
+        if (response) {
+          this.gridView=response.body.data;
+          this.gridData=response.body.data;
+        } else {
+          this.snackbarService.showToast(false, response.body.console.error);
+        }
+      },
+      (error: any) => {
+        this.snackbarService.showToast(false, "Something went wrong.");
+      }
+    );
+    this.subscriptions.push(subscription);
+  }
+
+
+  sheduleElection(content:any){
+    if (this.form.valid) {
+      const verifySubscription = this.stateElectionService.sheduleElection(this.form.get('stateId')?.value!,this.form.get('electionDate')?.value!).subscribe(
+        (response: any) => {
+          if (response) {
+            this.modalService.dismissAll(content);
+            this.snackbarService.showToast(true, response.body.message);
+            this.getData();
+          } else {
+            this.error = response.body.error;
+          }
+        },
+        (error: any) => {
+          this.error = "Something went wrong."
+        }
+      );
+      this.subscriptions.push(verifySubscription);
+    } else {
+      this.error = 'Please fill all fields.';
+    }
+  }
 
   removeKendoInvalidLicance() {
     setTimeout(() => {
-      // Remove the banner with the unique text content
       const banner = Array.from(document.querySelectorAll('div')).find((el) =>
         el.textContent?.includes('No valid license found for Kendo UI for Angular')
       );
       if (banner) banner.remove();
-  
-      // Remove the watermark element
       const watermarkElement = document.querySelector('div[kendowatermarkoverlay]');
       if (watermarkElement) {
         watermarkElement.remove();
-        console.log('Watermark removed successfully.');
       } else {
-        console.log('Watermark element not found.');
       }
     }, 0); 
   }
+
 }
