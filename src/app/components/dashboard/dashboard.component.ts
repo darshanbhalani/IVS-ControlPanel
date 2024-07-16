@@ -25,15 +25,17 @@ export class DashboardComponent {
   iVotes:any=[];
 
 
-  constructor(private dashboardService: DashboardService){}
+   constructor(private dashboardService: DashboardService){
+  }
 
   async ngOnInit() {
     await this.getData();
-  }
+   }
 
   async getData(){
     const dataSubscription = this.dashboardService.getDashboardData().subscribe(
       async (response: any) => {
+        console.log(response.body);
         this.totalStates = response.body.data.counts.totalStates;
         this.totalDistricts = response.body.data.counts.totalDistricts;
         this.totalAssemblies = response.body.data.counts.totalAssemblies;

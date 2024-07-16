@@ -8,6 +8,7 @@ import { LayoutServiceService } from '../../services/layout/layout-service.servi
 import { UserService } from '../../services/user/user.service';
 import { Router } from '@angular/router';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Component({
   selector: 'app-login',
@@ -42,7 +43,12 @@ export class LoginComponent {
     this.eyeSVG = this.eyeSVG===eyeIcon ? eyeSlashIcon:eyeIcon
   }
 
-  constructor(private fb: FormBuilder,private router:Router,private layoutService : LayoutServiceService,private userService: UserService) {
+  constructor(
+    private fb: FormBuilder,private router:Router,
+    private layoutService : LayoutServiceService,
+    private userService: UserService,
+    private loader:NgxUiLoaderService
+  ) {
     this.form = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required],
@@ -50,6 +56,7 @@ export class LoginComponent {
   }
 
   public login(): void {
+    this.loader.start;
     if (this.form.valid) {
       this.userService.login(this.form.value["username"], this.form.value["password"]).subscribe(
         (response:any) => {
