@@ -19,7 +19,7 @@ export class SnackbarService {
 
     const config: MatSnackBarConfig = {
       data: { message, isSuccess },
-      duration: 3000,
+      duration: 40000,
       horizontalPosition: 'right',
       verticalPosition: 'bottom',
       panelClass: isSuccess ? 'success-snackbar' : 'error-snackbar'
