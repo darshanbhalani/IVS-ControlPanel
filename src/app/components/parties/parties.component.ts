@@ -45,7 +45,7 @@ export class PartiesComponent implements OnDestroy {
   @ViewChild(DataBindingDirective) dataBinding!: DataBindingDirective;
 
   private toaster = inject(NgToastService);
-  data$:any = this.dataService.partiesList$
+  data$:any = this.dataService.partiesList$;
   gridData:any = this.dataService.partiesList$;
   gridView: any = [];
   partyId: any;

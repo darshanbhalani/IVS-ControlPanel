@@ -27,10 +27,11 @@ export class PartyServiceService {
     .then(()=> console.log("Connection started..."))
     .catch(err => console.error(err.toString()));
     
-    this.hubConnection.on('PartiesUpdated', (parties: any[]) => {
-      this.parties = parties;
-      this.partiesList.next(parties);
-      console.log(parties);
+    this.hubConnection.on('Broadcast-Parties', (response: any) => {
+      console.log(response);
+      if(response.success){
+        this.partiesList.next(response.body.data);
+      }
     });
 
       this.http.get<any[]>("https://localhost:7013/ElectionParty/GetAllParties").subscribe((response:any) => {
