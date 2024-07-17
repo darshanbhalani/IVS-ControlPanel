@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserService } from '../user/user.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,14 @@ export class StateElectionService {
   }
 
   sheduleElection(stateId:any,electionDate:any) : Observable<any>{
-    return this.http.get<any>("https://localhost:7013/Election/GetCompletedElections");
+    console.log(electionDate);
+    var data={
+      "electionDate": electionDate,
+      "stateId": stateId,
+      "actionBy": this.userService.getUserId()
+    };
+    console.log(data);
+    return this.http.post(`https://localhost:7013/Election/SheduleStateElection`,data);
   }
   
 }

@@ -171,7 +171,6 @@ export class PartiesComponent implements OnDestroy {
 
           this.partyId = null;
           this.partyName = null;
-          this.toster.success(response.body.message,{iconClass: '',closeButton: true});
         } else {
           this.error = response.body.error;
         }
