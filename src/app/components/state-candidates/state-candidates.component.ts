@@ -15,6 +15,8 @@ import { StateElectionService } from '../../services/stateElection/state-electio
 import { GeneralService } from '../../services/general/general.service';
 import { PartyServiceService } from '../../services/party/party-service.service';
 import { process } from '@progress/kendo-data-query';
+import { LoadingService } from '../../services/loading/loading.service';
+import { CommonModule } from '@angular/common';
 
 interface DropDownModel{
   name:string,
@@ -36,7 +38,8 @@ interface DropDownModel{
     LabelModule,
     DropDownsModule,
     SwitchModule,
-    FormsModule
+    FormsModule,
+    CommonModule
   ],
   templateUrl: './state-candidates.component.html',
   styleUrl: './state-candidates.component.scss'
@@ -44,10 +47,14 @@ interface DropDownModel{
 export class StateCandidatesComponent {
   @ViewChild(DataBindingDirective) dataBinding!: DataBindingDirective;
   @ViewChild('dropdown') dropdown!: DropDownListComponent; 
-
-  gridData=[];
-  gridView:any[]=[];
+  data$ = this.candidateService.candidateList$;
+  filteredData = this.candidateService.filteredList$
+  total:any=this.candidateService.total$;
+  verified:any=this.candidateService.verified$;
+  unverified:any=this.candidateService.unverified$;
+  rejected:any=this.candidateService.rejected$;
   stateList:any;
+  filter=0;
   error="";
   selectedFile:any;
   upcommingElectionsList:any=[];
@@ -89,8 +96,15 @@ export class StateCandidatesComponent {
   });
 
 
-  constructor( private modalService: NgbModal,private candidateService:StateCandidateService,private snackbarService:SnackbarService,private stateElectionService:StateElectionService,private generalServices:GeneralService,private partyService:PartyServiceService){
-  }
+  constructor( 
+    private modalService: NgbModal,
+    private candidateService:StateCandidateService,
+    private snackbarService:SnackbarService,
+    private stateElectionService:StateElectionService,
+    private generalServices:GeneralService,
+    private partyService:PartyServiceService,
+    private loader:LoadingService
+    ){}
 
  
 
@@ -160,17 +174,10 @@ export class StateCandidatesComponent {
 
 
  async getAllCandidates(electionId:any){
-   this.currentElectionId=electionId;
-    const dataSubscription=this.candidateService.getAllCandidates(electionId).subscribe(
-      (response: any) => {
-        this.gridData = response.body.data;
-        this.gridView = this.gridData;
-      },
-      (error: any) => {
-        this.snackbarService.showToast(false, "Error fetching data.");
-      }
-    );
-    this.subscriptions.push(dataSubscription);
+  this.loader.show();
+    alert(electionId);
+   this.candidateService.getAllCandidates(electionId.toString());
+    this.loader.hide();
   }
 
 
@@ -181,7 +188,6 @@ export class StateCandidatesComponent {
           name: item.asseblyName,
           value: item.asseblyId
         }));
-        console.log("Assembly Change...");
       },
       (error: any) => {
         this.snackbarService.showToast(false, "Error fetching data.");
@@ -228,10 +234,10 @@ export class StateCandidatesComponent {
 
   async onElectionChange(event:any){
     await this.getAllDistricts(event.stateId);
+    this.currentElectionId=event.value;
     await this.getAllCandidates(event.value);
   }
   
-
   onFileChange(event:any){
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -273,7 +279,7 @@ getVoterDetails(voterId:any){
         const subscription = this.candidateService.addNewCandidate(fData).subscribe(
           async (response: any) => {
             if (response.success) {
-              await this.getAllCandidates(this.currentElectionId);
+              // await this.getAllCandidates(this.currentElectionId);
               this.modalService.dismissAll();
               this.snackbarService.showToast(true, response.body.message);
               this.error = "";
@@ -304,11 +310,11 @@ getVoterDetails(voterId:any){
 
 
   verifyCandidate(content:any){
-    const verifySubscription = this.candidateService.verifyCandidate(this.candidateId).subscribe(
+    const verifySubscription = this.candidateService.verifyCandidate(this.candidateId,this.currentElectionId).subscribe(
       (response: any) => {
         if (response) {
           this.modalService.dismissAll(content);
-          this.getAllCandidates(this.currentElectionId);
+          // this.getAllCandidates(this.currentElectionId);
           this.candidateId=null;
           this.candidateName=null;
           this.snackbarService.showToast(true, response.body.message);
@@ -329,7 +335,7 @@ getVoterDetails(voterId:any){
       (response: any) => {
         if (response) {
           this.modalService.dismissAll(content);
-          this.getAllCandidates(this.currentElectionId);
+          // this.getAllCandidates(this.currentElectionId);
           this.candidateId=null;
           this.candidateName=null;
           this.snackbarService.showToast(true, response.body.message);
@@ -345,33 +351,31 @@ getVoterDetails(voterId:any){
   }
 
   public onFilter(value: Event): void {
-    const inputValue = value;
-    this.gridView = process(this.gridData, {
-      filter: {
-        logic: "or",
-        filters: [
-          {
-            field: "name",
-            operator: "contains",
-            value: inputValue,
-          },
-          {
-            field: "gender",
-            operator: "contains",
-            value: inputValue,
-          },
-          {
-            field: "partyName",
-            operator: "contains",
-            value: inputValue,
-          }, {
-            field: "assemblyName",
-            operator: "contains",
-            value: inputValue,
-          }
-        ],
-      },
-    }).data;
+    this.filter = ("" + value).length;
+    this.candidateService.filter(value);
+    this.dataBinding.skip = 0;
+  }
+
+  showVerifiedCandidates() {
+    this.candidateService.showVerifiedCandidates();
+    this.filter = 1;
+    this.dataBinding.skip = 0;
+  }
+
+  showUnverifiedCandidates() {
+    this.candidateService.showUnverifiedCandidates();
+    this.filter = 1;
+    this.dataBinding.skip = 0;
+  }
+
+  showAllCandidates() {
+    this.filter = 0;
+    this.dataBinding.skip = 0;
+  }
+
+  showRejectedCandidates() {
+    this.candidateService.showRejectedCandidates();
+    this.filter = 1;
     this.dataBinding.skip = 0;
   }
 

@@ -1,9 +1,66 @@
-@if((userRole$ | async)==1){
 <button kendoButton id="add-btn" class="k-btn mb-3" [svgIcon]="plusIcon" (click)="openAddModal($event, addModal)"
+style="padding: 8px; font-weight: bolder; padding-left: 15px; padding-right: 15px;">
+Add New Party
+</button>
+<div class="d-flex justify-content-between align-items-center flex-row">
+<button kendoButton id="verified-btn" class="k-btn mb-3" (click)="showAllParties()"
     style="padding: 8px; font-weight: bolder; padding-left: 15px; padding-right: 15px;">
-    Add New Party
-</button>}
-<kendo-grid  [kendoGridBinding]="filter > 0 ? gridView :(data$ | async)"
+    <div class="row d-flex justify-content-center align-items-center">
+        <div class="col d-flex justify-content-center align-items-center p-0">
+            <i class="box-icon fa-solid fa-flag text-primary"></i>
+        </div>
+        <div class="col">
+            <div class="row row-col-1">
+                <div class="col count">{{total | async}}</div>
+                <div class="col title">Total Parties</div>
+            </div>
+        </div>
+    </div>
+</button>
+<button kendoButton id="verified-btn" class="k-btn mb-3" (click)="showVerifiedParties()"
+    style="padding: 8px; font-weight: bolder; padding-left: 15px; padding-right: 15px;">
+    <div class="row d-flex justify-content-center align-items-center">
+        <div class="col d-flex justify-content-center align-items-center p-0">
+            <i class="box-icon fa-solid fa-circle-check text-success"></i>
+        </div>
+        <div class="col">
+            <div class="row row-col-1">
+                <div class="col count">{{verified | async}}</div>
+                <div class="col title">Verified Parties</div>
+            </div>
+        </div>
+    </div>
+</button>
+<button kendoButton id="unverified-btn" class="k-btn mb-3"(click)="showUnverifiedParties()"
+    style="padding: 8px; font-weight: bolder; padding-left: 15px; padding-right: 15px;">
+    <div class="row d-flex justify-content-center align-items-center">
+        <div class="col d-flex justify-content-center align-items-center p-0">
+            <i class="box-icon fa-solid fa-circle-info text-warning"></i>
+        </div>
+        <div class="col">
+            <div class="row row-col-1">
+                <div class="col count">{{unverified | async}}</div>
+                <div class="col title">Unverified Parties</div>
+            </div>
+        </div>
+    </div>
+</button>
+<button kendoButton id="rejected-btn" class="k-btn mb-3" (click)="showRejectedParties()"
+    style="padding: 8px; font-weight: bolder; padding-left: 15px; padding-right: 15px;">
+    <div class="row d-flex justify-content-center align-items-center">
+        <div class="col d-flex justify-content-center align-items-center p-0">
+            <i class="box-icon fa-solid fa-circle-xmark text-danger"></i>
+        </div>
+        <div class="col">
+            <div class="row row-col-1">
+                <div class="col count">{{rejected | async}}</div>
+                <div class="col title">Rejected Parties</div>
+            </div>
+        </div>
+    </div>
+</button>
+</div>
+<kendo-grid  [kendoGridBinding]="filter > 0 ? (filteredGrid$ | async) :(data$ | async)"
   [pageSize]="20" [pageable]="pageableSettings"
     [sortable]="true" [groupable]="true" [reorderable]="true" [resizable]="false"
     [columnMenu]="{ filter: true }" >
@@ -29,9 +86,15 @@
             @if(dataItem.verificationStatus ==='Verified'){
                 <i class="fa-solid fa-circle-check text-success"></i>
                 <span>&nbsp;{{dataItem.verificationStatus}}</span>
-            }@else {
+            }@else if(dataItem.verificationStatus ==='Unverified') {
+                <i class="fa-solid fa-circle-xmark text-danger"></i>
+                <span>&nbsp;{{dataItem.verificationStatus}}</span>
+            }@else if(dataItem.verificationStatus ==='Rejected'){
                 <i class="fa-solid fa-circle-info text-danger"></i>
                 <span>&nbsp;{{dataItem.verificationStatus}}</span>
+            }
+            @else{
+                <span>Unknown</span>
             }
         </ng-template>
     </kendo-grid-column>

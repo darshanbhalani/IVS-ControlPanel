@@ -18,6 +18,7 @@ import { UserService } from '../../services/user/user.service';
 import { SnackbarService } from '../../services/snackbar/snackbar.service';
 import { NgToastService } from 'ng-angular-popup';
 import { ToastrService } from 'ngx-toastr';
+import { LoadingService } from '../../services/loading/loading.service';
 
 
 @Component({
@@ -43,14 +44,17 @@ import { ToastrService } from 'ngx-toastr';
 export class PartiesComponent implements OnDestroy {
 
   @ViewChild(DataBindingDirective) dataBinding!: DataBindingDirective;
-
+  loader = inject(LoadingService);
   private toaster = inject(NgToastService);
-  data$:any = this.dataService.partiesList$;
-  gridData:any = this.dataService.partiesList$;
-  gridView: any = [];
+  data$ = this.dataService.partiesList$;
+  filteredGrid$ = this.dataService.filteredList$
+  total: any = this.dataService.total$;
+  verified: any = this.dataService.verified$;
+  unverified: any = this.dataService.unverified$;
+  rejected: any = this.dataService.rejected$;
   partyId: any;
   partyName: any;
-  filter=0;
+  filter = 0;
   error: string = "";
   userRole$ = this.userService.userRoleId$;
   selectedFile: any;
@@ -74,9 +78,12 @@ export class PartiesComponent implements OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private dataService: PartyServiceService, private modalService: NgbModal,
-     private userService: UserService, private snackbarService: SnackbarService,
-     private  toster :ToastrService) { }
+  constructor(
+    private dataService: PartyServiceService,
+    private modalService: NgbModal,
+    private userService: UserService,
+    private toster: ToastrService) {
+  }
 
   ngOnInit() {
     this.removeKendoInvalidLicance();
@@ -84,55 +91,37 @@ export class PartiesComponent implements OnDestroy {
   }
 
   getData() {
-    const dataSubscription = this.dataService.getAllParties().subscribe(
-      (response: any) => {
-        this.gridData = response.body.data;
-        this.gridView = this.gridData;
-      },
-      (error: any) => {
-        this.toaster.success("Error while fetching data.", "", 3000);
-      }
-    );
-    this.subscriptions.push(dataSubscription);
+    this.loader.show();
+    this.dataService.getAllParties();
+    this.loader.hide();
   }
 
   public onFilter(value: Event): void {
-    this.filter = (""+value).length;
-    this.gridView= process(this.gridData, {
-      filter: {
-        logic: "or",
-        filters: [
-          {
-            field: "electionPartyName",
-            operator: "contains",
-            value: value,
-          }
-        ],
-      },
-    }).data;
+    this.filter = ("" + value).length;
+    this.dataService.filter(value);
     this.dataBinding.skip = 0;
   }
 
   openAddModal(event: Event, content: any) {
     event.preventDefault();
     this.form.reset();
-    this.imageSrc=null;
-    this.selectedFile=null;
+    this.imageSrc = null;
+    this.selectedFile = null;
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'lg' });
   }
 
-  openEditModal(event: Event, content: any,data:any) {
+  openEditModal(event: Event, content: any, data: any) {
     event.preventDefault();
     this.form.setValue({
       partyName: data.electionPartyName
     });
-    this.partyName=data.electionPartyName;
-    this.partyId=data.electionPartyId;
-    this.imageSrc= 'data:image/jpeg;base64,'+data.electionPartyLogoUrl;
+    this.partyName = data.electionPartyName;
+    this.partyId = data.electionPartyId;
+    this.imageSrc = 'data:image/jpeg;base64,' + data.electionPartyLogoUrl;
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'lg' });
   }
 
-  openDeleteModal(event: Event, content: any,id: any, name: any) {
+  openDeleteModal(event: Event, content: any, id: any, name: any) {
     event.preventDefault();
     this.partyId = id;
     this.partyName = name;
@@ -159,24 +148,24 @@ export class PartiesComponent implements OnDestroy {
   }
 
   verifyParty(content: any) {
+    this.loader.show();
     const verifySubscription = this.dataService.verifyParty(this.partyId).subscribe(
       (response: any) => {
         if (response) {
+          this.loader.hide();
           this.modalService.dismissAll(content);
-
           this.toaster.success(response.body.message, "", 3000);
-
-          // this.snackbarService.showToast(true, response.body.message);
           this.getData();
-
           this.partyId = null;
           this.partyName = null;
         } else {
           this.error = response.body.error;
+          this.loader.hide();
         }
       },
       (error: any) => {
-        this.error = "Something went wrong."
+        this.error = "Something went wrong.";
+        this.loader.hide();
       }
     );
     this.subscriptions.push(verifySubscription);
@@ -184,6 +173,7 @@ export class PartiesComponent implements OnDestroy {
 
   addNewParty(content: any) {
     if (this.form.valid) {
+      this.loader.show();
       if (this.selectedFile != null) {
         const fData = new FormData();
         fData.append('electionPartyName', this.form.get('partyName')?.value!);
@@ -198,12 +188,15 @@ export class PartiesComponent implements OnDestroy {
               this.selectedFile = null;
               this.imageSrc = null;
               this.form.reset();
+              this.loader.hide();
             } else {
               this.error = response.body.error;
+              this.loader.hide();
             }
           },
           (error: any) => {
-            this.error = "Something went wrong."
+            this.error = "Something went wrong.";
+            this.loader.hide();
           }
         );
         this.subscriptions.push(addPartySubscription);
@@ -215,38 +208,44 @@ export class PartiesComponent implements OnDestroy {
     }
   }
 
-  updateParty(content: any){
+  updateParty(content: any) {
     if (this.form.valid) {
+      this.loader.show();
       const fData = new FormData();
       fData.append('electionPartyName', this.form.get('partyName')?.value!);
       fData.append('electionPartyId', this.partyId);
       if (this.selectedFile != null) {
         fData.append('image', this.selectedFile);
       }
-        const addPartySubscription = this.dataService.updateParty(fData).subscribe(
-          (response: any) => {
-            if (response.success) {
-              this.modalService.dismissAll();
-              this.toaster.success(response.body.message, "", 3000);
-              this.error = "";
-              this.selectedFile = null;
-              this.imageSrc = null;
-              this.form.reset();
-            } else {
-              this.error = response.body.error;
-            }
-          },
-          (error: any) => {
-            this.error = "Something went wrong."
+      const addPartySubscription = this.dataService.updateParty(fData).subscribe(
+        (response: any) => {
+          if (response.success) {
+            this.modalService.dismissAll();
+            this.toaster.success(response.body.message, "", 3000);
+            this.error = "";
+            this.selectedFile = null;
+            this.imageSrc = null;
+            this.form.reset();
+            this.loader.hide();
+          } else {
+            this.error = response.body.error;
+            this.loader.hide();
+
           }
-        );
-        this.subscriptions.push(addPartySubscription);
+        },
+        (error: any) => {
+          this.error = "Something went wrong.";
+          this.loader.hide();
+        }
+      );
+      this.subscriptions.push(addPartySubscription);
     } else {
       this.error = 'Please enter party name.';
     }
   }
 
-  deleteParty(content: any){
+  deleteParty(content: any) {
+    this.loader.show();
     const verifySubscription = this.dataService.deleteParty(this.partyId).subscribe(
       (response: any) => {
         if (response) {
@@ -254,17 +253,42 @@ export class PartiesComponent implements OnDestroy {
           this.toaster.success(response.body.message, "", 3000);
           this.partyId = null;
           this.partyName = null;
+          this.loader.hide();
         } else {
           this.error = response.body.error;
+          this.loader.hide();
         }
       },
       (error: any) => {
-        this.error = "Something went wrong."
+        this.error = "Something went wrong.";
+        this.loader.hide();
       }
     );
     this.subscriptions.push(verifySubscription);
   }
 
+  showVerifiedParties() {
+    this.filter = 1;
+    this.dataService.showVerifiedParties();
+    this.dataBinding.skip = 0;
+  }
+
+  showUnverifiedParties() {
+    this.dataService.showUnverifiedParties();
+    this.filter = 1;
+    this.dataBinding.skip = 0;
+  }
+
+  showAllParties() {
+    this.filter = 0;
+    this.dataBinding.skip = 0;
+  }
+
+  showRejectedParties() {
+    this.dataService.showRejectedParties();
+    this.filter = 1;
+    this.dataBinding.skip = 0;
+  }
 
   removeKendoInvalidLicance() {
     setTimeout(() => {

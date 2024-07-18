@@ -29,13 +29,11 @@ export class StateElectionService {
   }
 
   sheduleElection(stateId:any,electionDate:any) : Observable<any>{
-    console.log(electionDate);
     var data={
       "electionDate": electionDate,
       "stateId": stateId,
       "actionBy": this.userService.getUserId()
     };
-    console.log(data);
     return this.http.post(`https://localhost:7013/Election/SheduleStateElection`,data);
   }
   
