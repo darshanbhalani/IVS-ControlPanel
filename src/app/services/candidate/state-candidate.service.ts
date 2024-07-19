@@ -31,19 +31,6 @@ export class StateCandidateService {
       .withUrl('https://localhost:7013/electionPartyHub')
       .build();
 
-      this.hubConnection.on('Broadcast-Candidates-1', (response: any) => {
-        if (response.success) {
-          console.log(response);
-          this.total.next(response.body.data.length);
-          this.verified.next(response.body.data.filter((item: any) => item.verificationStatus.toLocaleLowerCase() === "verified").length);
-          this.unverified.next(response.body.data.filter((item: any) => item.verificationStatus.toLocaleLowerCase() === "unverified").length);
-          this.rejected.next(response.body.data.filter((item: any) => item.verificationStatus.toLocaleLowerCase() === "rejected").length);
-          this.candidateList.next(response.body.data);
-          this.candidates = response.body.data;
-        }
-      });
-      console.log(this.hubConnection.state);
-
     this.hubConnection.start()
       .then(() => {
         console.log("Connection started...");
@@ -52,7 +39,7 @@ export class StateCandidateService {
   }
 
   private subscribeHub(electionId: any) {
-    this.hubConnection.on('Broadcast-Candidates-1', (response: any) => {
+    this.hubConnection.on(`Broadcast-Candidates-${electionId}`, (response: any) => {
       if (response.success) {
         console.log(response);
         this.total.next(response.body.data.length);
@@ -146,7 +133,7 @@ export class StateCandidateService {
 
   getAllCandidates(electionId: string) {
     alert(electionId);
-    // this.subscribeHub(electionId);
+    this.subscribeHub(electionId);
     this.http.get("https://localhost:7013/Candidate/GetAllCandidates?electionid=" + electionId).subscribe(
       (response: any) => {
         if (response.success) {
