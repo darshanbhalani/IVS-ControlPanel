@@ -7,7 +7,7 @@ import { ExcelModule, GridModule, PDFModule, DataBindingDirective } from '@progr
 import { SVGIconModule } from '@progress/kendo-angular-icons';
 import { InputsModule, SwitchModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
-import { SVGIcon, plusIcon,fileExcelIcon, filePdfIcon } from '@progress/kendo-svg-icons';
+import { SVGIcon, plusIcon, fileExcelIcon, filePdfIcon } from '@progress/kendo-svg-icons';
 import { StateCandidateService } from '../../../../services/candidate/state-candidate.service';
 import { SnackbarService } from '../../../../services/snackbar/snackbar.service';
 import { Subscription } from 'rxjs';
@@ -17,10 +17,11 @@ import { PartyServiceService } from '../../../../services/party/party-service.se
 import { process } from '@progress/kendo-data-query';
 import { LoadingService } from '../../../../services/loading/loading.service';
 import { CommonModule } from '@angular/common';
+import { VoterService } from '../../../../services/voter/voter.service';
 
-interface DropDownModel{
-  name:string,
-  value:any
+interface DropDownModel {
+  name: string,
+  value: any
 }
 
 @Component({
@@ -46,33 +47,39 @@ interface DropDownModel{
 })
 export class StateCandidatesComponent {
   @ViewChild(DataBindingDirective) dataBinding!: DataBindingDirective;
-  @ViewChild('dropdown') dropdown!: DropDownListComponent; 
+  @ViewChild('dropdown') dropdown!: DropDownListComponent;
+  @ViewChild('genderDropdown') genderDropdown!: DropDownListComponent;
+  @ViewChild('dropdownDistricts') dropdownDistricts!: DropDownListComponent;
+  @ViewChild('dropdownAssemblies') dropdownAssemblies!: DropDownListComponent;
+
   data$ = this.candidateService.candidateList$;
   filteredData = this.candidateService.filteredList$
-  total:any=this.candidateService.total$;
-  verified:any=this.candidateService.verified$;
-  unverified:any=this.candidateService.unverified$;
-  rejected:any=this.candidateService.rejected$;
-  stateList:any;
-  filter=0;
-  error="";
-  selectedFile:any;
-  upcommingElectionsList:any=[];
-  districtList:any;
-  assemblyList:any;
-  partyList:any;
-  isDataFetched:boolean=false;
+  total: any = this.candidateService.total$;
+  verified: any = this.candidateService.verified$;
+  unverified: any = this.candidateService.unverified$;
+  rejected: any = this.candidateService.rejected$;
+  stateList: any;
+  filter = 0;
+  error = "";
+  isVoterFetched=false;
+  isElectionDistrictSelected=false;
+  selectedFile: any;
+  upcommingElectionsList: any = [];
+  districtList: any;
+  assemblyList: any;
+  partyList: any;
+  isDataFetched: boolean = false;
   public isCandidateIndependent = false;
-  isDistrictSelected:any;
-  currentElectionId:any;
-  candidateName:any;
-  candidateId:any;
+  isDistrictSelected: any;
+  currentElectionId: any;
+  candidateName: any;
+  candidateId: any;
 
   imageSrc: string | ArrayBuffer | null = null;
   genderList = [
-    {name:"Male" ,value:"M"},
-    {name:"Female" ,value:"F"},
-    {name:"Other" ,value:"O"}
+    { name: "Male", value: "M" },
+    { name: "Female", value: "F" },
+    { name: "Other", value: "O" }
   ]
 
   public pageableSettings: any = {
@@ -86,37 +93,38 @@ export class StateCandidatesComponent {
   public excelSVG: SVGIcon = fileExcelIcon;
   public plusIcon: SVGIcon = plusIcon;
   private subscriptions: Subscription[] = [];
-  
+
   public form: FormGroup = new FormGroup({
     candidateName: new FormControl(null, [Validators.required, Validators.minLength(5)]),
-    candidateGender: new FormControl(null,[Validators.required]),
+    candidateGender: new FormControl(null, [Validators.required]),
     candidateEpic: new FormControl(null, [Validators.required, Validators.maxLength(10)]),
     candidateAssemblyId: new FormControl(null, [Validators.required]),
-    candidatePartyId:new FormControl()
+    candidatePartyId: new FormControl()
   });
 
 
-  constructor( 
+  constructor(
     private modalService: NgbModal,
-    private candidateService:StateCandidateService,
-    private snackbarService:SnackbarService,
-    private stateElectionService:StateElectionService,
-    private generalServices:GeneralService,
-    private partyService:PartyServiceService,
-    private loader:LoadingService
-    ){}
+    private candidateService: StateCandidateService,
+    private snackbarService: SnackbarService,
+    private stateElectionService: StateElectionService,
+    private generalServices: GeneralService,
+    private partyService: PartyServiceService,
+    private loader: LoadingService,
+    private voterService: VoterService
+  ) { }
 
- 
+
 
   async ngOnInit() {
     this.removeKendoInvalidLicance();
     await this.getAllUpCommingElections();
-    this.isDistrictSelected=false;
+    this.isDistrictSelected = false;
     await this.getAllParties();
   }
 
-  
-  async getAllDistricts(stateId:any){
+
+  async getAllDistricts(stateId: any) {
     const dataSubscription = this.generalServices.getAllDistricts(stateId).subscribe(
       async (response: any) => {
         this.districtList = response.body.data.map((item: any) => ({
@@ -133,7 +141,7 @@ export class StateCandidatesComponent {
   }
 
 
-  async getAllParties(){
+  async getAllParties() {
     const dataSubscription = this.partyService.getAllVerifiedParties().subscribe(
       async (response: any) => {
         this.partyList = response.body.data.map((item: any) => ({
@@ -155,7 +163,7 @@ export class StateCandidatesComponent {
         this.upcommingElectionsList = response.body.data.map((item: any) => ({
           name: item.stateName,
           value: item.stateElectionId,
-          stateId:item.stateId
+          stateId: item.stateId
         }));
         if (this.dropdown) {
           console.log(this.upcommingElectionsList);
@@ -173,15 +181,14 @@ export class StateCandidatesComponent {
   }
 
 
- async getAllCandidates(electionId:any){
-  this.loader.show();
-    alert(electionId);
-   this.candidateService.getAllCandidates(electionId.toString());
+  async getAllCandidates(electionId: any) {
+    this.loader.show();
+    this.candidateService.getAllCandidates(electionId.toString());
     this.loader.hide();
   }
 
 
-  async getAllAssemblies(districtId:any){
+  async getAllAssemblies(districtId: any) {
     const dataSubscription = this.generalServices.getAllAssemblyByDistrict(districtId).subscribe(
       async (response: any) => {
         this.assemblyList = response.body.data.map((item: any) => ({
@@ -202,43 +209,58 @@ export class StateCandidatesComponent {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'lg' });
   }
 
-  openEditModal(event: Event, content: any,data:any) {
+  openEditModal(event: Event, content: any, data: any) {
     event.preventDefault();
-    this.imageSrc= 'data:image/jpeg;base64,'+data.electionPartyLogoUrl;
+    this.imageSrc = 'data:image/jpeg;base64,' + data.electionPartyLogoUrl;
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'lg' });
   }
 
-  openDeleteModal(event: Event, content: any,data: any) {
+  openDeleteModal(event: Event, content: any, data: any) {
     event.preventDefault();
-    this.candidateId=data.id;
-    this.candidateName=data.name;
+    this.candidateId = data.id;
+    this.candidateName = data.name;
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'md' });
   }
 
   openVerifyModal(event: Event, content: any, data: any) {
     event.preventDefault();
-    this.candidateId=data.id;
-    this.candidateName=data.name;
+    this.candidateId = data.id;
+    this.candidateName = data.name;
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'md' });
   }
 
-  async onDistrictChange(event:any){
-    if(event.value!=0){
+  async onDistrictChange(event: any) {
+    if (event.value != 0) {
       await this.getAllAssemblies(event.value);
-      this.isDistrictSelected=true;
-    }else{
-      this.isDistrictSelected=false;
+      this.isDistrictSelected = true;
+    } else {
+      this.isDistrictSelected = false;
     }
   }
 
-
-  async onElectionChange(event:any){
-    await this.getAllDistricts(event.stateId);
-    this.currentElectionId=event.value;
-    await this.getAllCandidates(event.value);
+  onElectionDistrictChange(event:any){
+    if(event.value != null){
+      this.isElectionDistrictSelected=true;
+    }else{
+      this.isElectionDistrictSelected=false;
+    }
   }
-  
-  onFileChange(event:any){
+
+  onElectionAssemblyChange(event:any){
+    this.dropdownAssemblies.reset();
+  }
+
+  async onElectionChange(event: any) {
+    this.loader.show();
+    this.dropdownDistricts.reset();
+    this.dropdownAssemblies.reset();
+    await this.getAllDistricts(event.stateId);
+    this.currentElectionId = event.value;
+    await this.getAllCandidates(event.value);
+    this.loader.hide();
+  }
+
+  onFileChange(event: any) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       this.selectedFile = input.files[0];
@@ -251,29 +273,29 @@ export class StateCandidatesComponent {
   }
 
 
-getVoterDetails(voterId:any){
+  getVoterDetails(voterId: any) {
 
-}
-
-
-  toggle(){
-    this.isCandidateIndependent=!this.isCandidateIndependent;
   }
 
 
-  addNewCandidate(){
+  toggle() {
+    this.isCandidateIndependent = !this.isCandidateIndependent;
+  }
+
+
+  addNewCandidate() {
     if (this.form.valid) {
-      if (( this.isCandidateIndependent && this.selectedFile != null) || ( !this.isCandidateIndependent && (this.form.get('candidatePartyId')?.value).value != null) ) {
+      if ((this.isCandidateIndependent && this.selectedFile != null) || (!this.isCandidateIndependent && (this.form.get('candidatePartyId')?.value).value != null)) {
         const fData = new FormData();
         fData.append('name', this.form.get('candidateName')?.value!);
-        fData.append('gender', (this.form.get('candidateGender')?.value).value!);
+        fData.append('gender', this.genderList.find((item: any) => item.name === this.form.get('candidateGender')?.value!)?.value!);
         fData.append('epic', this.form.get('candidateEpic')?.value!);
         fData.append('assemblyId', (this.form.get('candidateAssemblyId')?.value).value!);
-        fData.append('electionId',this.currentElectionId );
-        if(this.isCandidateIndependent){
-          fData.append('image', this.selectedFile); 
-        }else{
-          fData.append('partyId',(this.form.get('candidatePartyId')?.value).value!);
+        fData.append('electionId', this.currentElectionId);
+        if (this.isCandidateIndependent) {
+          fData.append('image', this.selectedFile);
+        } else {
+          fData.append('partyId', (this.form.get('candidatePartyId')?.value).value!);
         }
 
         const subscription = this.candidateService.addNewCandidate(fData).subscribe(
@@ -304,19 +326,47 @@ getVoterDetails(voterId:any){
   }
 
 
-  updateCandidate(){
+  updateCandidate() {
 
   }
 
+  clearForm(){
+    alert("Reset");
+    this.isVoterFetched=false;
+    this.form.reset();
+  }
 
-  verifyCandidate(content:any){
-    const verifySubscription = this.candidateService.verifyCandidate(this.candidateId,this.currentElectionId).subscribe(
+
+  fetchVoter(voterEpic: any) {
+    this.loader.show();
+    this.voterService.fetchVoterDetailsByEpic(voterEpic).subscribe((response: any) => {
+      if (response.success) {
+        console.log(response.body.data.voterName);
+        const genderItem = this.genderList.find((item: any) => item.value === response.body.data.voterGender);
+        this.form.setValue({
+                candidateName: response.body.data.voterName,
+                candidateGender: genderItem?.name,
+                candidateEpic: response.body.data.voterEpic,
+                candidateAssemblyId: "",
+                candidatePartyId: ""
+            });
+            this.isVoterFetched=true;
+      }
+      else {
+        this.error = response.body.error;
+      }
+    });
+    this.loader.hide();
+  }
+
+  verifyCandidate(content: any) {
+    const verifySubscription = this.candidateService.verifyCandidate(this.candidateId, this.currentElectionId).subscribe(
       (response: any) => {
         if (response) {
           this.modalService.dismissAll(content);
           // this.getAllCandidates(this.currentElectionId);
-          this.candidateId=null;
-          this.candidateName=null;
+          this.candidateId = null;
+          this.candidateName = null;
           this.snackbarService.showToast(true, response.body.message);
         } else {
           this.error = response.body.error;
@@ -330,14 +380,14 @@ getVoterDetails(voterId:any){
   }
 
 
-  deleteCandidate(content:any){
+  deleteCandidate(content: any) {
     const verifySubscription = this.candidateService.deleteCandidate(this.candidateId).subscribe(
       (response: any) => {
         if (response) {
           this.modalService.dismissAll(content);
           // this.getAllCandidates(this.currentElectionId);
-          this.candidateId=null;
-          this.candidateName=null;
+          this.candidateId = null;
+          this.candidateName = null;
           this.snackbarService.showToast(true, response.body.message);
         } else {
           this.error = response.body.error;
@@ -390,6 +440,6 @@ getVoterDetails(voterId:any){
         watermarkElement.remove();
       } else {
       }
-    }, 0); 
+    }, 0);
   }
 }

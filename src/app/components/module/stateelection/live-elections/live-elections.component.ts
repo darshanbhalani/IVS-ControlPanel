@@ -206,6 +206,7 @@ export class LiveElectionsComponent implements OnInit {
   ngAfterViewInit(){
     if (this.dropdown) {
       console.log("hello.............................................");
+      
       console.log(this.dropdown.defaultItem);
        this.dropdown.defaultItem = {name:"30 Sec",value:30};
        console.log(this.dropdown.defaultItem);

@@ -133,7 +133,6 @@ export class StateCandidateService {
   }
 
   getAllCandidates(electionId: string) {
-    alert(electionId);
     this.subscribeHub(electionId);
     this.http.get(`${environment.apiBaseUrl}/Candidate/GetAllCandidates?electionid=` + electionId).subscribe(
       (response: any) => {
@@ -161,7 +160,6 @@ export class StateCandidateService {
   }
 
   verifyCandidate(candidateId: any, electionId: any): Observable<any> {
-    alert(electionId);
     return this.http.get(`${environment.apiBaseUrl}/Candidate/VerifyCandidate?candidateId=${candidateId}&verifiedBy=${this.userService.getUserId()}&electionId=${1}`);
   }
 }

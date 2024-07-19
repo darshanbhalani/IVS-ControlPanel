@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
-import { LayoutComponent } from './components/layout/layout.component';
+import { LayoutComponent } from './components/layout-window/layout/layout.component';
 import { LayoutServiceService } from './services/layout/layout-service.service';
-import { ErrorComponent } from './components/error/error.component';
+import { ErrorComponent } from './components/other/error/error.component';
 import { CommonModule } from '@angular/common';
 import { NgToastModule, ToasterPosition } from 'ng-angular-popup';
 import { NgxUiLoaderHttpModule, NgxUiLoaderModule, NgxUiLoaderRouterModule } from 'ngx-ui-loader';
 import { HttpClientModule } from '@angular/common/http';
 import { LoadingService } from './services/loading/loading.service';
 import { RouterModule,Router, RouterOutlet, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
-import { LoadingComponent } from './components/loading/loading.component';
+import { LoadingComponent } from './components/other/loading/loading.component';
 import { Observable } from 'rxjs';
 
 @Component({
