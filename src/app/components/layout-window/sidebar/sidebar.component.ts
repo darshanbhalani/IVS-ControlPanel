@@ -1,13 +1,13 @@
 import { Component, ElementRef, HostListener } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
-import { LayoutServiceService } from '../../services/layout/layout-service.service';
+import { LayoutServiceService } from '../../../services/layout/layout-service.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
-import { DashboardComponent } from '../dashboard/dashboard.component';
+import { DashboardComponent } from '../../module/dashboard/dashboard.component';
 import { CommonModule } from '@angular/common';
 
 @Component({

@@ -3,13 +3,13 @@ import { Injectable } from '@angular/core';
 import { Console } from 'console';
 import { jwtDecode } from 'jwt-decode';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  private apiUrl = 'https://localhost:7013';
   private userName = new BehaviorSubject<string>("");
   userName$ = this.userName.asObservable();
   private userRoleId = new BehaviorSubject<number>(0);
@@ -23,7 +23,7 @@ export class UserService {
   }
 
   login(username: string, password: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/Account/Login?userName=${username}&password=${password}`)
+    return this.http.get(`${environment.apiBaseUrl}/Account/Login?userName=${username}&password=${password}`)
     .pipe(
       tap((response: any) => {
         if (response.success) {
@@ -53,7 +53,7 @@ export class UserService {
 
   getUserProfile():Observable<any>{
     const decodedToken:any = jwtDecode(`${this.getToken()}`) as Object;
-    return this.http.get(`${this.apiUrl}/Account/GetUserProfileDetails?userId=${decodedToken["employeeId"]}`);
+    return this.http.get(`${environment.apiBaseUrl}/Account/GetUserProfileDetails?userId=${decodedToken["employeeId"]}`);
   }
 
   setUserData():void{

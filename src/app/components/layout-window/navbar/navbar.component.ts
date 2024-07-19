@@ -7,15 +7,15 @@ import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
-import { DashboardComponent } from '../dashboard/dashboard.component';
+import { DashboardComponent } from '../../module/dashboard/dashboard.component';
 import { PopupModule } from '@progress/kendo-angular-popup';
 import { log } from 'console';
 import { Conditional } from '@angular/compiler';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { UserService } from '../../services/user/user.service';
+import { UserService } from '../../../services/user/user.service';
 import { response } from 'express';
 import { CommonModule } from '@angular/common';
-import { SnackbarService } from '../../services/snackbar/snackbar.service';
+import { SnackbarService } from '../../../services/snackbar/snackbar.service';
 
 @Component({
   selector: 'app-navbar',

@@ -7,7 +7,7 @@ import { InputsModule } from '@progress/kendo-angular-inputs';
 import { fileExcelIcon, filePdfIcon } from '@progress/kendo-svg-icons';
 import { process } from '@progress/kendo-data-query';
 import { firstValueFrom } from 'rxjs';
-import { GeneralService } from '../../services/general/general.service';
+import { GeneralService } from '../../../../services/general/general.service';
 
 declare var FusionCharts: any;
 

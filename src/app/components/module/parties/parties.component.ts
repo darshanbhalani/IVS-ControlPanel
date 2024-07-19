@@ -6,7 +6,7 @@ import { ExcelModule, GridModule, PDFModule, DataBindingDirective } from '@progr
 import { SVGIconModule } from '@progress/kendo-angular-icons';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { SVGIcon, plusIcon, fileExcelIcon, filePdfIcon } from '@progress/kendo-svg-icons';
-import { PartyServiceService } from '../../services/party/party-service.service';
+import { PartyServiceService } from '../../../services/party/party-service.service';
 import { process } from '@progress/kendo-data-query';
 import { PopupModule } from '@progress/kendo-angular-popup';
 import { DialogModule } from '@progress/kendo-angular-dialog';
@@ -14,11 +14,11 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
-import { UserService } from '../../services/user/user.service';
-import { SnackbarService } from '../../services/snackbar/snackbar.service';
+import { UserService } from '../../../services/user/user.service';
+import { SnackbarService } from '../../../services/snackbar/snackbar.service';
 import { NgToastService } from 'ng-angular-popup';
 import { ToastrService } from 'ngx-toastr';
-import { LoadingService } from '../../services/loading/loading.service';
+import { LoadingService } from '../../../services/loading/loading.service';
 
 
 @Component({

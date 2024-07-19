@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { CircularCounterComponent } from '../circular-counter/circular-counter.component';
+import { CircularCounterComponent } from '../../module/dashboard/circular-counter/circular-counter.component';
 import { Chart } from 'chart.js/auto';
-import { DashboardService } from '../../services/dashboard/dashboard.service';
+import { DashboardService } from '../../../services/dashboard/dashboard.service';
 
 @Component({
   selector: 'app-dashboard',

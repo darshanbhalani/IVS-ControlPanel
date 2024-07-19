@@ -13,19 +13,19 @@ export class StateElectionService {
 
 
   getAllElections():Observable<any> {
-    return this.http.get<any>("https://localhost:7013/Election/GetAllStateElections");
+    return this.http.get<any>(`${environment.apiBaseUrl}/Election/GetAllStateElections`);
   }
 
   getAllUpcommingElections():Observable<any> {
-    return this.http.get<any>("https://localhost:7013/Election/GetUpcommingElections");
+    return this.http.get<any>(`${environment.apiBaseUrl}/Election/GetUpcommingElections`);
   }
 
   getAllLiveElections():Observable<any> {
-    return this.http.get<any>("https://localhost:7013/Election/GetAllLiveElections");
+    return this.http.get<any>(`${environment.apiBaseUrl}/Election/GetAllLiveElections`);
   }
 
   getAllCompletedElections():Observable<any> {
-    return this.http.get<any>("https://localhost:7013/Election/GetCompletedElections");
+    return this.http.get<any>(`${environment.apiBaseUrl}/Election/GetCompletedElections`);
   }
 
   sheduleElection(stateId:any,electionDate:any) : Observable<any>{
@@ -34,7 +34,7 @@ export class StateElectionService {
       "stateId": stateId,
       "actionBy": this.userService.getUserId()
     };
-    return this.http.post(`https://localhost:7013/Election/SheduleStateElection`,data);
+    return this.http.post(`${environment.apiBaseUrl}/Election/SheduleStateElection`,data);
   }
   
 }

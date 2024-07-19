@@ -1,16 +1,15 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { RouterOutlet, NavigationEnd, NavigationStart, NavigationCancel, NavigationError } from '@angular/router';
-import { NavbarComponent } from '../navbar/navbar.component';
+import { NavbarComponent } from '../navbar/navbar.component;
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { filter } from 'rxjs/operators'
-import { LayoutServiceService } from '../../services/layout/layout-service.service';
-import { LoginComponent } from '../login/login.component';
-import { ErrorComponent } from '../error/error.component';
-import { LoadingService } from '../../services/loading/loading.service';
+import { LayoutServiceService } from '../../../services/layout/layout-service.service';
+import { LoginComponent } from '../../authentication/login/login.component';
+import { ErrorComponent } from '../../other/error/error.component';
+import { LoadingService } from '../../../services/loading/loading.service';
 import { Observable } from 'rxjs';
-import { LoadingComponent } from '../loading/loading.component';
+import { LoadingComponent } from '../../other/loading/loading.component';
 
 @Component({
   selector: 'app-layout',

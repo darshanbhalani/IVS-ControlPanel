@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { UserService } from '../user/user.service';
 import * as signalR from '@microsoft/signalr';
 import { response } from 'express';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,7 @@ export class StateCandidateService {
 
   constructor(private http: HttpClient, private userService: UserService) {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7013/electionPartyHub')
+      .withUrl(environment.hubUrl)
       .build();
 
     this.hubConnection.start()
@@ -128,13 +129,13 @@ export class StateCandidateService {
 
 
   addNewCandidate(candidate: any): Observable<any> {
-    return this.http.post(`https://localhost:7013/Candidate/AddCandidate`, candidate);
+    return this.http.post(`${environment.apiBaseUrl}/Candidate/AddCandidate`, candidate);
   }
 
   getAllCandidates(electionId: string) {
     alert(electionId);
     this.subscribeHub(electionId);
-    this.http.get("https://localhost:7013/Candidate/GetAllCandidates?electionid=" + electionId).subscribe(
+    this.http.get(`${environment.apiBaseUrl}/Candidate/GetAllCandidates?electionid=` + electionId).subscribe(
       (response: any) => {
         if (response.success) {
           this.total.next(response.body.data.length);
@@ -149,18 +150,18 @@ export class StateCandidateService {
   }
 
   getAllCandidatesOfAssembly(electionId: any, AssemblyId: any): Observable<any> {
-    return this.http.get(`https://localhost:7013/Candidate/GetAllCandidatesOfAssembly?electionid=${electionId}&assemblyId=${AssemblyId}`);
+    return this.http.get(`${environment.apiBaseUrl}/Candidate/GetAllCandidatesOfAssembly?electionid=${electionId}&assemblyId=${AssemblyId}`);
   }
 
   updateCandidateDetails() {
   }
 
   deleteCandidate(candidateId: any): Observable<any> {
-    return this.http.get(`https://localhost:7013/Candidate/DeleteCandidate?candidateId=${candidateId}&deletedBy=${this.userService.getUserId()}`);
+    return this.http.get(`${environment.apiBaseUrl}/Candidate/DeleteCandidate?candidateId=${candidateId}&deletedBy=${this.userService.getUserId()}`);
   }
 
   verifyCandidate(candidateId: any, electionId: any): Observable<any> {
     alert(electionId);
-    return this.http.get(`https://localhost:7013/Candidate/VerifyCandidate?candidateId=${candidateId}&verifiedBy=${this.userService.getUserId()}&electionId=${1}`);
+    return this.http.get(`${environment.apiBaseUrl}/Candidate/VerifyCandidate?candidateId=${candidateId}&verifiedBy=${this.userService.getUserId()}&electionId=${1}`);
   }
 }

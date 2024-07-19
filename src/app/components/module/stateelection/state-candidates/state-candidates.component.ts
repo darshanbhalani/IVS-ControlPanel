@@ -8,14 +8,14 @@ import { SVGIconModule } from '@progress/kendo-angular-icons';
 import { InputsModule, SwitchModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { SVGIcon, plusIcon,fileExcelIcon, filePdfIcon } from '@progress/kendo-svg-icons';
-import { StateCandidateService } from '../../services/candidate/state-candidate.service';
-import { SnackbarService } from '../../services/snackbar/snackbar.service';
+import { StateCandidateService } from '../../../../services/candidate/state-candidate.service';
+import { SnackbarService } from '../../../../services/snackbar/snackbar.service';
 import { Subscription } from 'rxjs';
-import { StateElectionService } from '../../services/stateElection/state-election.service';
-import { GeneralService } from '../../services/general/general.service';
-import { PartyServiceService } from '../../services/party/party-service.service';
+import { StateElectionService } from '../../../../services/stateElection/state-election.service';
+import { GeneralService } from '../../../../services/general/general.service';
+import { PartyServiceService } from '../../../../services/party/party-service.service';
 import { process } from '@progress/kendo-data-query';
-import { LoadingService } from '../../services/loading/loading.service';
+import { LoadingService } from '../../../../services/loading/loading.service';
 import { CommonModule } from '@angular/common';
 
 interface DropDownModel{

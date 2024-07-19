@@ -9,9 +9,9 @@ import { LabelModule } from '@progress/kendo-angular-label';
 import { SVGIcon,plusIcon, filePdfIcon, fileExcelIcon } from "@progress/kendo-svg-icons";
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, RequiredValidator, Validators } from "@angular/forms";
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
-import { GeneralService } from '../../services/general/general.service';
-import { StateElectionService } from '../../services/stateElection/state-election.service';
-import { SnackbarService } from '../../services/snackbar/snackbar.service';
+import { GeneralService } from '../../../../services/general/general.service';
+import { StateElectionService } from '../../../../services/stateElection/state-election.service';
+import { SnackbarService } from '../../../../services/snackbar/snackbar.service';
 import { Subscription } from 'rxjs';
 
 @Component({

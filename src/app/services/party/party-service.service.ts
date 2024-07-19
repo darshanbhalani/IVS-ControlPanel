@@ -29,7 +29,7 @@ export class PartyServiceService {
 
   constructor(private http: HttpClient, private userService: UserService) {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7013/electionPartyHub')
+      .withUrl(environment.hubUrl)
       .build();
 
     this.hubConnection.start()
@@ -110,7 +110,7 @@ export class PartyServiceService {
   }
 
   getAllParties(): any {
-    this.http.get<any[]>("https://localhost:7013/ElectionParty/GetAllParties").subscribe(
+    this.http.get<any[]>(`${environment.apiBaseUrl}/ElectionParty/GetAllParties`).subscribe(
       (response: any) => {
         if (response.success) {
           this.total.next(response.body.data.length);
@@ -125,7 +125,7 @@ export class PartyServiceService {
   }
 
   getAllVerifiedParties(): Observable<any[]> {
-    return this.http.get<any[]>("https://localhost:7013/ElectionParty/GetAllVerifiedParties");
+    return this.http.get<any[]>(`${environment.apiBaseUrl}/ElectionParty/GetAllVerifiedParties`);
   }
 
   verifyParty(partyId: number): Observable<any> {
@@ -133,16 +133,16 @@ export class PartyServiceService {
   }
 
   deleteParty(partyId: number): Observable<any> {
-    return this.http.get(`https://localhost:7013/ElectionParty/DeleteParty?partyid=${partyId}&deletedby=${this.userService.getUserId()}`);
+    return this.http.get(`${environment.apiBaseUrl}/ElectionParty/DeleteParty?partyid=${partyId}&deletedby=${this.userService.getUserId()}`);
   }
 
   addNewParty(party: any): Observable<any> {
     party.append("createdBy", this.userService.getUserId());
-    return this.http.post(`https://localhost:7013/ElectionParty/AddNewParty`, party);
+    return this.http.post(`${environment.apiBaseUrl}/ElectionParty/AddNewParty`, party);
   }
 
   updateParty(party: any): Observable<any> {
     party.append("createdBy", this.userService.getUserId());
-    return this.http.post(`https://localhost:7013/ElectionParty/UpdateParty`, party);
+    return this.http.post(`${environment.apiBaseUrl}/ElectionParty/UpdateParty`, party);
   }
 }
