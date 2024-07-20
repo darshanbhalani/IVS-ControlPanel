@@ -1,0 +1,24 @@
+<div *ngIf="isLoginPage$ | async; else mainLayout">
+    <app-login></app-login>
+</div>
+
+<ng-template #mainLayout>
+        <div class="navbar-compo">
+            <app-sidebar></app-sidebar>
+            <section class="home-section">
+                <app-navbar></app-navbar>
+                <div class="container-fluid px-3">
+                    <div class="d-flex justify-content-start align-items-center flex-row py-3">
+                        <i class="fa-solid fa-house">&nbsp;</i>
+                        <ng-container *ngFor="let part of (currentPath$ | async)?.split('/'); let last = last">
+                            <i class="fa-solid fa-chevron-right">&nbsp;</i>
+                            <span>{{ part | titlecase}}</span>
+                        </ng-container>
+                    </div>
+                    <router-outlet></router-outlet>
+                </div>
+            </section>
+        </div>
+</ng-template>
+
+<app-loading [isLoading]="isLoading | async"></app-loading>

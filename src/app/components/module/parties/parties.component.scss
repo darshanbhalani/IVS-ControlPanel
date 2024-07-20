@@ -1,0 +1,39 @@
+#add-btn{
+  background-color: #005C78;
+  color: white;
+}
+
+#rejected-btn, #unverified-btn, #verified-btn{
+  height: 100px;
+  width: 20vw;
+  min-width: 200px;
+
+  .box-icon{
+    font-size: xx-large;
+  }
+
+  .count{
+    font-size: xx-large;
+    font-weight: bolder;
+  }
+
+  .title{
+    font-size: large;
+  }
+}
+
+
+.image-box-col{
+  width: 200px;
+  height: 200px;
+  .image-box{
+    width: 200px;
+    height: 200px;
+  border: 1px solid black;
+    img{
+      width: 200px;
+      height: 200px;
+    }
+  }
+}
+
