@@ -14,3 +14,20 @@
     align-items: center !important;
 }
 
+.box-btn{
+    height: 100px;
+    width: 20vw;
+    min-width: 200px;
+  
+    .box-icon{
+      font-size: xx-large;
+    }
+  
+    .count{
+      font-size: xx-large;
+    }
+  
+    .title{
+      font-size: large;
+    }
+  }

@@ -2,9 +2,67 @@
     style="padding: 8px; font-weight: bolder; padding-left: 15px; padding-right: 15px;">
     Shedule Election
 </button>
+<div class="d-flex justify-content-between align-items-center flex-row">
+    <button kendoButton class="k-btn mb-3 box-btn" (click)="showAllElections()"
+        style="padding: 8px; font-weight: bolder; padding-left: 15px; padding-right: 15px;">
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="col d-flex justify-content-center align-items-center p-0">
+                <i class="box-icon fa-solid fa-flag text-primary"></i>
+            </div>
+            <div class="col">
+                <div class="row row-col-1">
+                    <div class="col count">{{total | async}}</div>
+                    <div class="col title">Total Elections</div>
+                </div>
+            </div>
+        </div>
+    </button>
+    <button kendoButton class="k-btn mb-3 box-btn" (click)="showVerifiedElections()"
+        style="padding: 8px; font-weight: bolder; padding-left: 15px; padding-right: 15px;">
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="col d-flex justify-content-center align-items-center p-0">
+                <i class="box-icon fa-solid fa-circle-check text-success"></i>
+            </div>
+            <div class="col">
+                <div class="row row-col-1">
+                    <div class="col count">{{verified | async}}</div>
+                    <div class="col title">Verified Elections</div>
+                </div>
+            </div>
+        </div>
+    </button>
+    <button kendoButton class="k-btn mb-3 box-btn"(click)="showUnverifiedElections()"
+        style="padding: 8px; font-weight: bolder; padding-left: 15px; padding-right: 15px;">
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="col d-flex justify-content-center align-items-center p-0">
+                <i class="box-icon fa-solid fa-circle-info text-warning"></i>
+            </div>
+            <div class="col">
+                <div class="row row-col-1">
+                    <div class="col count">{{unverified | async}}</div>
+                    <div class="col title">Unverified Elections</div>
+                </div>
+            </div>
+        </div>
+    </button>
+    <button kendoButton class="k-btn mb-3 box-btn" (click)="showLockedElections()"
+        style="padding: 8px; font-weight: bolder; padding-left: 15px; padding-right: 15px;">
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="col d-flex justify-content-center align-items-center p-0">
+                <i class="box-icon fa-solid fa-lock text-secondary"></i>
+            </div>
+            <div class="col">
+                <div class="row row-col-1">
+                    <div class="col count">{{rejected | async}}</div>
+                    <div class="col title">Locked Elections</div>
+                </div>
+            </div>
+        </div>
+    </button>
+    </div>
 <div class="col-12 kendo-grid-data d-flex justify-content-center flex-column">
     <div class="kendo-grid-data">
-        <kendo-grid [kendoGridBinding]="gridData" kendoGridSelectBy="stateElectionId" [pageSize]="20" [pageable]="pageableSettings"
+        <kendo-grid [kendoGridBinding]="filter > 0 ? (filteredGrid$ | async) :(data$ | async)" kendoGridSelectBy="stateElectionId" [pageSize]="20" [pageable]="pageableSettings"
             [sortable]="true" [groupable]="true" [reorderable]="true" [resizable]="true"
             [columnMenu]="{ filter: true }">
             <ng-template kendoGridToolbarTemplate>
@@ -19,11 +77,24 @@
             </kendo-grid-column>
             <kendo-grid-column field="electionDate" title="Year" [width]=20>
             </kendo-grid-column>
-            <kendo-grid-column field="totalAssembly" title="Total Assembly" [width]=20>
-            </kendo-grid-column>
             <kendo-grid-column field="electionStageName" title="Status" [width]=20>
             </kendo-grid-column>
-            <kendo-grid-column field="jkb" title="Approval" [width]=10>
+            <kendo-grid-column field="verificationStatusName" title="Verification Status" [width]="20">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    @if(dataItem.verificationStatusName ==='Verified'){
+                        <i class="fa-solid fa-circle-check text-success"></i>
+                        <span>&nbsp;{{dataItem.verificationStatusName}}</span>
+                    }@else if(dataItem.verificationStatusName ==='Unverified') {
+                        <i class="fa-solid fa-circle-info text-warning"></i>
+                        <span>&nbsp;{{dataItem.verificationStatusName}}</span>
+                    }@else if(dataItem.verificationStatusName ==='Rejected'){
+                        <i class="fa-solid fa-circle-xmark text-danger"></i>
+                        <span>&nbsp;{{dataItem.verificationStatusName}}</span>
+                    }
+                    @else{
+                        <span>Unknown</span>
+                    }
+                </ng-template>
             </kendo-grid-column>
             <kendo-grid-column   title="Actions" [width]="15">
                 <ng-template kendoGridCellTemplate let-dataItem>

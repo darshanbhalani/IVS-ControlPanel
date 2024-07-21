@@ -61,7 +61,7 @@ Add New Party
 </button>
 </div>
 <kendo-grid  [kendoGridBinding]="filter > 0 ? (filteredGrid$ | async) :(data$ | async)"
-  [pageSize]="20" [pageable]="pageableSettings"
+  [pageSize]="20" [pageable]="false"
     [sortable]="true" [groupable]="true" [reorderable]="true" [resizable]="false"
     [columnMenu]="{ filter: true }" >
     <ng-template kendoGridToolbarTemplate>

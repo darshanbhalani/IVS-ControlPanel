@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
-import { ExcelModule, GridModule, PDFModule } from '@progress/kendo-angular-grid';
+import { DataBindingDirective, ExcelModule, GridModule, PDFModule } from '@progress/kendo-angular-grid';
 import { SVGIconModule } from '@progress/kendo-angular-icons';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
@@ -13,6 +13,9 @@ import { GeneralService } from '../../../../services/general/general.service';
 import { StateElectionService } from '../../../../services/stateElection/state-election.service';
 import { SnackbarService } from '../../../../services/snackbar/snackbar.service';
 import { Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { NgToastService } from 'ng-angular-popup';
+import { LoadingService } from '../../../../services/loading/loading.service';
 
 @Component({
   selector: 'app-state-elections',
@@ -28,16 +31,25 @@ import { Subscription } from 'rxjs';
     LabelModule,
     FormsModule,
     ReactiveFormsModule,
-    DateInputsModule
+    DateInputsModule,
+    CommonModule
   ],
   templateUrl: './state-elections.component.html',
   styleUrl: './state-elections.component.scss'
 })
 export class StateElectionsComponent {
+  @ViewChild(DataBindingDirective) dataBinding!: DataBindingDirective;
 
-  gridView=[];
-  gridData=[];
-  stateList:any=[];
+  loader = inject(LoadingService);
+  private toaster = inject(NgToastService);
+  data$ = this.stateElectionService.electionList$;
+  filteredGrid$ = this.stateElectionService.filteredList$;
+  total: any = this.stateElectionService.total$;
+  verified: any = this.stateElectionService.verified$;
+  unverified: any = this.stateElectionService.unverified$;
+  rejected: any = this.stateElectionService.locked$;
+  filter=0;
+  stateList=[];
   error:any=null;
   private subscriptions: Subscription[] = [];
   public pageableSettings: any = {
@@ -59,9 +71,9 @@ export class StateElectionsComponent {
 constructor(private modalService: NgbModal,private generalService:GeneralService,private stateElectionService:StateElectionService,private snackbarService:SnackbarService){}
  
   ngOnInit(){
-  this.removeKendoInvalidLicance() 
-  this.getStatesList();
+  this.removeKendoInvalidLicance();
   this.getData();
+  this.getStatesList();
   }
 
   openModal(event: Event, content: any) {
@@ -82,20 +94,9 @@ constructor(private modalService: NgbModal,private generalService:GeneralService
   }
 
   getData(){
-    const subscription = this.stateElectionService.getAllElections().subscribe(
-      (response: any) => {
-        if (response) {
-          this.gridView=response.body.data;
-          this.gridData=response.body.data;
-        } else {
-          this.snackbarService.showToast(false, response.body.console.error);
-        }
-      },
-      (error: any) => {
-        this.snackbarService.showToast(false, "Something went wrong.");
-      }
-    );
-    this.subscriptions.push(subscription);
+    this.loader.show();
+    this.stateElectionService.getAllElections();
+    this.loader.hide();
   }
 
 
@@ -121,6 +122,28 @@ constructor(private modalService: NgbModal,private generalService:GeneralService
     }
   }
 
+  showVerifiedElections() {
+    this.filter = 1;
+    this.stateElectionService.showVerifiedElections();
+    this.dataBinding.skip = 0;
+  }
+
+  showUnverifiedElections() {
+    this.stateElectionService.showUnverifiedElections();
+    this.filter = 1;
+    this.dataBinding.skip = 0;
+  }
+
+  showAllElections() {
+    this.filter = 0;
+    this.dataBinding.skip = 0;
+  }
+
+  showLockedElections() {
+    this.stateElectionService.showLockedElections();
+    this.filter = 1;
+    this.dataBinding.skip = 0;
+  }
   removeKendoInvalidLicance() {
     setTimeout(() => {
       const banner = Array.from(document.querySelectorAll('div')).find((el) =>
