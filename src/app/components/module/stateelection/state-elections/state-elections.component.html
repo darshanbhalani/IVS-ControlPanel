@@ -99,10 +99,10 @@
             <kendo-grid-column   title="Actions" [width]="15">
                 <ng-template kendoGridCellTemplate let-dataItem>
                  <!-- @if((userRole$ | async) == 2){ -->
-                  <button class="ms-2 btn btn-danger"><i class="fa-solid fa-trash"></i></button>
-                    <button class="ms-2 btn btn-secondary" ><i class="fa-solid fa-pencil"></i></button>
-                    @if(dataItem.verificationStatus !=='Verified'){
-                        <button class="ms-2 btn btn-warning"><i class="fa-solid fa-check"></i></button>
+                  <button class="ms-2 btn btn-danger" (click)="openDeleteModal($event,deleteModal,dataItem)"><i class="fa-solid fa-trash"></i></button>
+                    <button class="ms-2 btn btn-secondary"><i class="fa-solid fa-pencil"></i></button>
+                    @if(dataItem.verificationStatus != 2){
+                        <button class="ms-2 btn btn-warning" (click)="openVerifyModal($event,verifyModal,dataItem)"><i class="fa-solid fa-check"></i></button>
                       }
                     <!-- } -->
             </ng-template>
@@ -149,5 +149,77 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark" (click)="sheduleElection(addModel)">Shedule Election</button>
+    </div>
+</ng-template>
+
+<ng-template #updateModel let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">State Election Details</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form class="k-form k-form-md" [formGroup]="form">
+            <fieldset class="k-form-fieldset">
+                <div class="row">
+                    <div class="col-2 flex-start-center">
+                        <kendo-label text="Election State : "></kendo-label>
+                    </div>
+                    <div class="col-10">
+                        <kendo-formfield>
+                            <kendo-dropdownlist class="input-field" [defaultItem]="{name:'Select State',value:null}" [data]="stateList" textField="name" valueField="value"
+                                [valuePrimitive]="true" formControlName="stateId">
+                            </kendo-dropdownlist>
+                        </kendo-formfield>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2 flex-start-center">
+                        <kendo-label text="Election Date : "></kendo-label>
+                    </div>
+                    <div class="col-10">
+                        <kendo-formfield>
+                            <kendo-datepicker class="input-field" placeholder="Choose Election Date" formControlName="electionDate"></kendo-datepicker>
+                        </kendo-formfield>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+        <div class="error-text text-center text-danger pt-5">{{error}}</div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="sheduleElection(addModel)">Update</button>
+    </div>
+</ng-template>
+
+
+<ng-template #verifyModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title2">Verify Election</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div>
+            You are sure! You want to verify <b>{{stateName}}-{{(electionDate.split('-'))[0]}}</b> state election details ?
+        </div>
+        <div class="error-text text-center text-danger pt-1">{{error}}</div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="verifyElection(verifyModal)">Verify</button>
+    </div>
+</ng-template>
+
+<ng-template #deleteModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title2">Delete Election</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div>
+            You are sure! You want to delete <b>{{stateName}}-{{(electionDate.split('-'))[0]}}</b> election ?
+        </div>
+        <div class="error-text text-center text-danger pt-1">{{error}}</div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="deleteElection(deleteModal)">Delete</button>
     </div>
 </ng-template>

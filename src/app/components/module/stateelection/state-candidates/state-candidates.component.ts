@@ -37,7 +37,6 @@ interface DropDownModel {
     ButtonModule,
     ReactiveFormsModule,
     LabelModule,
-    DropDownsModule,
     SwitchModule,
     FormsModule,
     CommonModule
@@ -76,6 +75,7 @@ export class StateCandidatesComponent {
   candidateId: any;
 
   imageSrc: string | ArrayBuffer | null = null;
+  
   genderList = [
     { name: "Male", value: "M" },
     { name: "Female", value: "F" },

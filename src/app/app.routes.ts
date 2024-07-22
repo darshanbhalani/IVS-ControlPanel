@@ -9,11 +9,13 @@ import { LoginComponent } from './components/authentication/login/login.componen
 import { ErrorComponent } from './components/other/error/error.component';
 import { authGuard } from './guard/auth/auth.guard';
 import { LiveElectionsComponent } from './components/module/stateelection/live-elections/live-elections.component';
+import { VotersComponent } from './components/module/voters/voters/voters.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'stateelection', redirectTo: '/stateelection/elections', pathMatch: 'full'},
+  { path: 'voters', component: VotersComponent, canActivate: [authGuard], pathMatch: 'full' },
   {
     path: 'stateelection',
     canActivate: [authGuard],

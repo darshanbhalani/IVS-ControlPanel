@@ -48,6 +48,9 @@ export class StateElectionsComponent {
   verified: any = this.stateElectionService.verified$;
   unverified: any = this.stateElectionService.unverified$;
   rejected: any = this.stateElectionService.locked$;
+  electionId:any;
+  stateName:any;
+  electionDate:any;
   filter=0;
   stateList=[];
   error:any=null;
@@ -144,6 +147,27 @@ constructor(private modalService: NgbModal,private generalService:GeneralService
     this.filter = 1;
     this.dataBinding.skip = 0;
   }
+
+  openDeleteModal(event: Event, content: any, data:any) {
+    event.preventDefault();
+    this.electionId=data.stateElectionId;
+    this.stateName=data.stateName;
+    this.electionDate=data.electionDate;
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'md' });
+  }
+
+  openVerifyModal(event: Event, content: any, data:any) {
+    event.preventDefault();
+    this.electionId=data.stateElectionId;
+    this.stateName=data.stateName;
+    this.electionDate=data.electionDate;
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', centered: true, size: 'md' });
+  }
+
+  verifyElection(content:any){}
+
+  deleteElection(content:any){}
+
   removeKendoInvalidLicance() {
     setTimeout(() => {
       const banner = Array.from(document.querySelectorAll('div')).find((el) =>

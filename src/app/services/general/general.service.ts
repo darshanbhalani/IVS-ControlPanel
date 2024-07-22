@@ -15,15 +15,15 @@ export class GeneralService {
     return this.http.get<any[]>(`${environment.apiBaseUrl}/State/GetAllStates`);
   }
 
-  getAllAssemblyByState(stateid:any): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiBaseUrl}/Assembly/GetAllAssemblyByState?stateid=`+stateid);
+  getAllAssemblyByState(stateId:any): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiBaseUrl}/Assembly/GetAllAssemblyByState?stateid=${stateId}`);
   }
 
   getAllAssemblyByDistrict(districtId:any): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/Assembly/GetAllAssemblyByDistrict?districtid=`+districtId);
+    return this.http.get(`${environment.apiBaseUrl}/Assembly/GetAllAssemblyByDistrict?districtid=${districtId}`);
   }
 
   getAllDistricts(stateId:any): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/District/GetAllDistricts?stateid=`+stateId);
+    return this.http.get(`${environment.apiBaseUrl}/District/GetAllDistricts?stateid=${stateId}`);
   }
 }

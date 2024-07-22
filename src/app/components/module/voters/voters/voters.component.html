@@ -1,0 +1,122 @@
+<button kendoButton class="k-btn mb-3" [svgIcon]="plusIcon" (click)="openAddModal($event,addModal)"
+    style="padding: 8px; font-weight: bolder; padding-left: 15px; padding-right: 15px;">
+    Add New Voter
+</button>
+
+
+<ng-template #addModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Candidate Details</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form class="k-form k-form-md" [formGroup]="form">
+            <fieldset class="k-form-fieldset">
+                <div class="row">
+                    <div class="row">
+                        <div class="col-4 d-flex justify-content-center align-content-center flex-column">
+                            <div class="image-box-col">
+                                <div class="image-box text-center ">
+                                    <div class="d-flex justify-content-center align-items-center text-center img">
+                                        <img [src]="imageSrc" alt="Uploaded Image" class="text-center " />
+                                    </div>
+                                </div>
+                            </div>
+                            <label for="file-upload d-flex justify-content-center align-items-center text-center"
+                                        class="custom-file-upload pt-3 pb-2">
+                                        <i class="fa fa-cloud-upload"></i> Upload Image (200 x 200 px)
+                                    </label>
+                                    <input id="file-upload" type="file" (change)="onFileChange($event)" />
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                <kendo-formfield class="pt-0 mt-0">
+                                    <kendo-label text="Voter Full Name"></kendo-label>
+                                    <kendo-textbox style="padding:5px;" formControlName="vName"
+                                        [clearButton]="true" required>
+                                    </kendo-textbox>
+                                </kendo-formfield>
+                            </div>
+                            <div class="row">
+                                <kendo-formfield>
+                                    <kendo-label text="Voter Father/Spouse Full Name"></kendo-label>
+                                    <kendo-textbox style="padding:5px;" formControlName="fName"
+                                        [clearButton]="true" required>
+                                    </kendo-textbox>
+                                </kendo-formfield>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <kendo-formfield>
+                                        <kendo-label text="Select Gender"></kendo-label>
+                                        <kendo-dropdownlist [data]="genderList" formControlName="gender" class="bg-transparent"
+                                            textField="name" valueField="value" style="padding: 5px;"
+                                            [defaultItem]="{name:'Select Gender',value:0}">
+                                        </kendo-dropdownlist>
+                                    </kendo-formfield>
+                                </div>
+                                <div class="col-6">
+                                    <kendo-formfield>
+                                        <kendo-label text="Birth Date : "></kendo-label>
+                                            <kendo-datepicker class="input-field" placeholder="Select Birth-Date" formControlName="birthDate"  style="padding: 5px;"></kendo-datepicker>
+                                    </kendo-formfield>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <kendo-formfield>
+                                    <kendo-label text="Voter Phone Number"></kendo-label>
+                                    <kendo-textbox style="padding:5px;" formControlName="phoneNumber"
+                                        [clearButton]="true" required>
+                                    </kendo-textbox>
+                                </kendo-formfield>
+                            </div>
+                            <div class="row">
+                                <kendo-formfield>
+                                    <kendo-label text="Voter Address"></kendo-label>
+                                    <kendo-textbox style="padding:5px;" formControlName="address"
+                                        [clearButton]="true" required>
+                                    </kendo-textbox>
+                                </kendo-formfield>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <kendo-formfield>
+                                <kendo-label text="State Name"></kendo-label>
+                                <kendo-dropdownlist [data]="stateList" formControlName="state"
+                                class="bg-transparent" textField="name" valueField="value" style="padding: 5px;"
+                                    [defaultItem]="{name:'Select State',value:0}">
+                                </kendo-dropdownlist>
+                            </kendo-formfield>
+                        </div>
+                        <div class="col-4">
+                            <kendo-formfield>
+                                <kendo-label text="District Name"></kendo-label>
+                                <kendo-dropdownlist [data]="districtList" formControlName="district"
+                                class="bg-transparent" textField="name" valueField="value" style="padding: 5px;"
+                                    [defaultItem]="{name:'Select District',value:0}">
+                                </kendo-dropdownlist>
+                            </kendo-formfield>
+                        </div>
+                        <div class="col-4">
+                            <kendo-formfield>
+                                <kendo-label text="Assembly Name"></kendo-label>
+                                <kendo-dropdownlist [data]="assemblyList" formControlName="assembly"
+                                class="bg-transparent" textField="name" valueField="value" style="padding: 5px;"
+                                    [defaultItem]="{name:'Select Assembly',value:0}">
+                                </kendo-dropdownlist>
+                            </kendo-formfield>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-3 text-center text-danger">
+                        {{ error }}
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark">Save</button>
+    </div>
+</ng-template>

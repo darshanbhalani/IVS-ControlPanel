@@ -37,7 +37,6 @@ export class PartyServiceService {
       .catch(err => console.error(err.toString()));
 
     this.hubConnection.on('Broadcast-Parties', (response: any) => {
-      console.log(response);
       if (response.success) {
         this.total.next(response.body.data.length);
         this.verified.next(response.body.data.filter((item: any) => item.verificationStatus.toLocaleLowerCase() === "verified").length);
