@@ -37,7 +37,6 @@ export class LiveElectionsComponent implements OnInit, OnDestroy {
   gridData: any = [];
   gridView: any[] = [];
   chartDataSubscription!: Subscription;
-  datasetHiddenSubscription!: Subscription;
   public chart: any;
   public pdfSVG: SVGIcon = filePdfIcon;
   public excelSVG: SVGIcon = fileExcelIcon;
@@ -72,7 +71,8 @@ export class LiveElectionsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.removeKendoInvalidLicance();
-    this.getData();
+    // this.getData();
+    this.getDistricts(7);
 
     const chartOptions: ChartConfiguration<'line'>['options'] = {
       scales: {
@@ -81,26 +81,50 @@ export class LiveElectionsComponent implements OnInit, OnDestroy {
         }
       },
       plugins: {
-        legend: {
-          onClick: (e, legendItem, legend) => {
-            this.liveElectionService.toggleDatasetVisibility(true,false,false);
-          }
-        },
         title: {
           display: true,
           text: 'Live Election Data'
+        },
+        legend: {
+          onClick: (e, legendItem, legend) => {
+            const defaultClickHandler = Chart.defaults.plugins.legend.onClick;
+            defaultClickHandler.call(legend, e, legendItem, legend);
+            const chart = legend.chart;
+            const datasetIndex = legendItem.datasetIndex;
+            console.log(chart.data);
+            chart.update();
+
+            console.log(legendItem);
+            if(legendItem.text === 'Male'){
+              this.liveElectionService.toggleDatasetVisibility(true,false,false);
+            }else if(legendItem.text === 'Female'){
+              this.liveElectionService.toggleDatasetVisibility(false,true,false);
+            }else if(legendItem.text === 'Other'){
+              this.liveElectionService.toggleDatasetVisibility(false,false,true);
+            }else{
+
+            }
+          }
         }
       },
       responsive: true,
       maintainAspectRatio: false,
-      animation: false // Disable animations
+      animation: false
     };
 
     const ctx = document.getElementById('myChart') as HTMLCanvasElement;
     this.chart = new Chart(ctx, {
       type: 'line',
-      data: { labels: [], datasets: [] },
+      data: {
+        labels: [],
+        datasets: []
+      },
       options: chartOptions
+    });
+
+    this.chartDataSubscription = this.liveElectionService.chartData$.subscribe(chartData => {
+      this.chart.data = chartData;
+      this.chart.update();
     });
   }
 
@@ -108,13 +132,6 @@ export class LiveElectionsComponent implements OnInit, OnDestroy {
     if (this.chartDataSubscription) {
       this.chartDataSubscription.unsubscribe();
     }
-    if (this.datasetHiddenSubscription) {
-      this.datasetHiddenSubscription.unsubscribe();
-    }
-  }
-
-  toggleDatasetVisibility(index: number) {
-    this.liveElectionService.toggleDatasetVisibility(index);
   }
 
   ngAfterViewInit() { }

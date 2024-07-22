@@ -47,7 +47,7 @@ export class LiveElectionService {
       this.data.next(response);
       console.log(response);
 
-      this.datasetHidden.next(this.initialHiddenState);
+      this.datasetHidden.next(this.test);
 
       const chartData = {
         labels: this.timeList,
@@ -61,7 +61,7 @@ export class LiveElectionService {
             pointRadius: 1,
             pointHoverRadius: 5,
             borderWidth: 0.5,
-            hidden: this.initialHiddenState[0]
+            hidden: this.test[0]
           },
           {
             label: 'Female',
@@ -72,7 +72,7 @@ export class LiveElectionService {
             pointRadius: 1,
             pointHoverRadius: 5,
             borderWidth: 0.5,
-            hidden: this.initialHiddenState[1]
+            hidden: this.test[1]
           },
           {
             label: 'Other',
@@ -83,7 +83,7 @@ export class LiveElectionService {
             pointRadius: 1,
             pointHoverRadius: 5,
             borderWidth: 0.5,
-            hidden: this.initialHiddenState[2]
+            hidden:  this.test[2]
           }
         ]
       };
@@ -97,6 +97,9 @@ export class LiveElectionService {
     temp.push(i1 ? !this.test[0]:this.test[0]);
     temp.push(i2 ? !this.test[1]:this.test[1]);
     temp.push(i3 ? !this.test[2]:this.test[2]);
+    console.log(this.test);
+    this.test=temp;
+    console.log(this.test);
     this.datasetHidden.next(temp);
   }
 }
